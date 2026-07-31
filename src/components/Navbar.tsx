@@ -8,12 +8,23 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Hero section sequence animation takes up roughly 200vh-300vh.
-      // We change the navbar when we scroll past 200vh, which is when the Hero section fully finishes.
-      if (window.scrollY > window.innerHeight * 1.8) {
-        setScrolled(true);
+      // Check if the '#fitur' section has reached the top of the viewport
+      const fiturSection = document.getElementById('fitur');
+      if (fiturSection) {
+        const rect = fiturSection.getBoundingClientRect();
+        // Trigger when the white section is within 100px of the top (the navbar area)
+        if (rect.top <= 100) {
+          setScrolled(true);
+        } else {
+          setScrolled(false);
+        }
       } else {
-        setScrolled(false);
+        // Fallback just in case
+        if (window.scrollY > window.innerHeight * 2) {
+          setScrolled(true);
+        } else {
+          setScrolled(false);
+        }
       }
     };
 
@@ -31,9 +42,14 @@ export default function Navbar() {
         }`}
       >
         {/* Left: Logo */}
-        <div className="flex items-center">
-          <span className="font-sans font-bold text-2xl tracking-widest text-[#FFFDF8] drop-shadow-sm">
-            [SAHABAT]
+        <div className="flex items-center gap-3">
+          <img 
+            src="/logo.png" 
+            alt="SAHABAT Logo" 
+            className="h-12 md:h-16 object-contain drop-shadow-sm transition-transform hover:scale-105"
+          />
+          <span className="font-sans font-bold text-xl md:text-2xl tracking-widest text-[#FFFDF8] drop-shadow-sm uppercase">
+            SAHABAT
           </span>
         </div>
         

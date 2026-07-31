@@ -35,9 +35,14 @@ export default function FooterCTA() {
           
           {/* Logo & Socials */}
           <div className="md:w-1/3">
-            <div className="flex items-center mb-6">
-              <span className="text-[#1885A4] font-sans font-black text-3xl tracking-widest uppercase">
-                [SAHABAT]
+            <div className="flex items-center gap-4 mb-6">
+              <img 
+                src="/logo.png" 
+                alt="SAHABAT Logo" 
+                className="h-16 md:h-20 object-contain"
+              />
+              <span className="text-[#1885A4] font-sans font-black text-2xl md:text-3xl tracking-widest uppercase">
+                SAHABAT
               </span>
             </div>
             <p className="text-gray-500 text-sm leading-relaxed mb-6 font-sans">
