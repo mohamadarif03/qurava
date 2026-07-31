@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-outfit), system-ui, -apple-system, sans-serif;
+  --font-serif: var(--font-playfair), Georgia, serif;
+  --font-montserrat: var(--font-montserrat), sans-serif;
+}
+
+html {
+  font-size: 80%;
+}
+
+body {
+  background-color: #FAF8F1;
+  color: #1F4D3D;
+  overflow-x: hidden;
+}
+
+/* Custom premium scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF8F1;
+}
+::-webkit-scrollbar-thumb {
+  background: #9CC7B5;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3F8068;
+}
+
+/* Custom premium focal glows */
+.glow-accent {
+  box-shadow: 0 0 40px 10px rgba(156, 199, 181, 0.15);
+}
