@@ -74,7 +74,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section className="py-24 md:py-32 bg-[#FFFDF8] relative border-t border-gray-100">
+    <section id="cara-kerja" className="py-24 md:py-32 bg-[#FFFDF8] relative border-t border-gray-100">
       <div className="max-w-[1200px] mx-auto px-6 md:px-16 flex flex-col lg:flex-row gap-16 lg:gap-24 relative">
         
         {/* Left Sticky Column */}

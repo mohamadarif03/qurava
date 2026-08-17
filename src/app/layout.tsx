@@ -31,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={`${outfit.variable} ${playfair.variable} ${montserrat.variable} h-full antialiased`}>
+    <html lang="id" className={`${outfit.variable} ${playfair.variable} ${montserrat.variable} h-full antialiased scroll-smooth`}>
       <body className="min-h-full font-sans bg-[#FAF8F1] selection:bg-[#9CC7B5]/30 selection:text-[#1F4D3D]">
         {children}
       </body>

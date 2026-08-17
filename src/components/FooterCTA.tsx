@@ -2,7 +2,7 @@
 
 export default function FooterCTA() {
   return (
-    <div className="bg-[#FFFDF8] relative mt-12">
+    <div id="daftar" className="bg-[#FFFDF8] relative mt-12">
       {/* CTA Banner Layered over the footer */}
       <div className="relative z-20 max-w-5xl mx-auto px-6 -mb-16">
         <div className="bg-[#1885A4] rounded-2xl md:rounded-[2rem] p-8 md:p-12 shadow-[0_0_40px_rgba(255,255,255,0.3)] flex flex-col md:flex-row items-center justify-between text-white overflow-hidden relative">

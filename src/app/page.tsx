@@ -3,11 +3,19 @@ import HowItWorks from "@/components/HowItWorks";
 import Testimonials from "@/components/Testimonials";
 import FooterCTA from "@/components/FooterCTA";
 import Navbar from "@/components/Navbar";
+import OnboardingModal from "@/components/OnboardingModal";
+import GlobalVoiceReader from "@/components/GlobalVoiceReader";
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen selection:bg-[#9CC7B5]/30 selection:text-[#1885A4]">
       
+      {/* Global Voice Reader for Accessibility */}
+      <GlobalVoiceReader />
+
+      {/* Onboarding Pop-up (Accessibility Selection) */}
+      <OnboardingModal />
+
       {/* Interactive Sticky Navbar */}
       <Navbar />
 

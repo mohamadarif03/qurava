@@ -1,0 +1,5 @@
+- [x] Rencana Implementasi: Fitur Perekam Suara Pengguna (Voice Recording)
+- [x] Tambahkan tombol mikrofon di UI detail.
+- [x] Implementasikan MediaRecorder API (start, stop, permissions).
+- [x] Buat UI untuk status merekam (indikator merah) dan pemutar ulang rekaman.
+- [x] Validasi fitur.

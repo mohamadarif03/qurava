@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -57,17 +58,17 @@ export default function Navbar() {
         <div className="flex items-center gap-10">
           <nav className="hidden md:flex items-center gap-8 text-[15px] font-sans font-normal text-[#FFFDF8] drop-shadow-sm">
             <a href="#fitur" className="hover:opacity-70 transition-opacity">Fitur</a>
-            <a href="#baca" className="hover:opacity-70 transition-opacity">Cara Kerja</a>
-            <a href="#tentang" className="hover:opacity-70 transition-opacity">Tentang</a>
+            <a href="#cara-kerja" className="hover:opacity-70 transition-opacity">Cara Kerja</a>
+            <a href="#testimoni" className="hover:opacity-70 transition-opacity">Testimoni</a>
           </nav>
 
-          <a
-            href="#baca"
+          <Link
+            href="/dashboard"
             className="px-6 py-2.5 font-sans font-bold text-[14px] rounded-full transition-all duration-300 shadow-lg flex items-center gap-2 bg-[#FFFDF8] text-[#1885A4] hover:bg-gray-100"
           >
             Mulai Belajar
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-          </a>
+          </Link>
         </div>
       </header>
     </div>

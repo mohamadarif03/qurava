@@ -59,7 +59,7 @@ export default function Testimonials() {
   };
 
   return (
-    <section className="py-24 md:py-32 bg-[#FFFDF8] relative overflow-hidden">
+    <section id="testimoni" className="py-24 md:py-32 bg-[#FFFDF8] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 text-center mb-16">
         <h2 className="text-4xl md:text-5xl font-sans font-black text-[#111827] uppercase tracking-tight leading-[1.0] mb-6">
           Pengalaman Mereka

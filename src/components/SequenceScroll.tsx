@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import Link from "next/link";
 
 const TOTAL_FRAMES = 80;
 const PRELOAD_BATCH_SIZE = 15; // Load first 15 frames immediately
@@ -365,8 +366,8 @@ export default function SequenceScroll() {
                       Mari mulai perjalanan spiritual Anda. Temukan surah yang ingin Anda baca dan rasakan kenyamanannya sekarang.
                     </p>
 
-                    <button
-                      onClick={() => window.location.href = "#baca"}
+                    <Link
+                      href="/dashboard"
                       className="group flex items-center gap-4 bg-[#FFFDF8] hover:bg-gray-100 text-[#1885A4] px-8 py-4 rounded-full transition-all duration-300 shadow-xl shadow-black/10 hover:shadow-2xl hover:shadow-black/20 hover:-translate-y-1 w-fit"
                     >
                       <span className="font-sans font-black text-sm tracking-[0.1em] uppercase">
@@ -377,7 +378,7 @@ export default function SequenceScroll() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
                       </div>
-                    </button>
+                    </Link>
                   </div>
                 </motion.div>
               </div>
