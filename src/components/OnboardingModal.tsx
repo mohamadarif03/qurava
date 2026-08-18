@@ -20,9 +20,8 @@ export default function OnboardingModal() {
     const timer = setTimeout(() => {
       setIsOpen(true);
       
-      // Trigger voice guidance
+      // Trigger voice guidance (Initial Greeting)
       if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        // Cancel any ongoing speech first
         window.speechSynthesis.cancel();
         
         const textToSpeak = "Selamat datang di Sahabat. Bantu aku mengenalmu! Pilih kondisimu agar aku bisa menyesuaikan tampilan dan fitur aplikasi ini menjadi yang terbaik untukmu. Gunakan tombol Tab di keyboard untuk bernavigasi dan Enter untuk memilih.";
@@ -78,22 +77,23 @@ export default function OnboardingModal() {
     // Save to localStorage
     localStorage.setItem("accessibility_mode", option);
     
-    if (option !== "tunanetra") {
-      // If they chose anything else, STOP the voice immediately
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      // Segera matikan suara saat ini
+      window.speechSynthesis.cancel();
+      
+      // Gunakan timeout kecil untuk memastikan antrean (queue) benar-benar kosong 
+      // dari event onFocus yang mungkin terpicu bersamaan dengan onClick
+      setTimeout(() => {
         window.speechSynthesis.cancel();
-      }
-    } else {
-      // If they chose Tuna Netra, confirm their choice with voice
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance("Mode Tuna Netra diaktifkan. Anda sekarang masuk ke aplikasi berbasis suara.");
-        utterance.lang = "id-ID";
-        window.speechSynthesis.speak(utterance);
-      }
+        
+        if (option === "tunanetra") {
+          const utterance = new SpeechSynthesisUtterance("Mode Tuna Netra diaktifkan. Anda sekarang masuk ke aplikasi berbasis suara.");
+          utterance.lang = "id-ID";
+          window.speechSynthesis.speak(utterance);
+        }
+      }, 50);
     }
     
-    console.log("Selected mode:", option);
     setIsOpen(false);
   };
 

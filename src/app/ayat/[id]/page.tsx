@@ -1,0 +1,224 @@
+"use client";
+
+import React, { useState } from "react";
+import Sidebar from "@/components/Sidebar";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+
+export default function AyatDetailPage() {
+  const params = useParams();
+  const id = params?.id;
+  
+  const [playingId, setPlayingId] = useState<number | null>(null);
+
+  // Data statis khusus Al-Fatihah
+  const surahData = {
+    nameLatin: "Al-Fatihah",
+    nameArabic: "الفاتحة",
+    translation: "Pembukaan",
+    ayahCount: 7,
+    verses: [
+      {
+        id: 1,
+        arabic: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم",
+        latin: "Bismillaahir-rahmaanir-rahiim",
+        translation: "Dengan nama Allah Yang Maha Pengasih, Maha Penyayang."
+      },
+      {
+        id: 2,
+        arabic: "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+        latin: "Alhamdu lillaahi rabbil-'aalamiin",
+        translation: "Segala puji bagi Allah, Tuhan seluruh alam,"
+      },
+      {
+        id: 3,
+        arabic: "الرَّحْمَنِ الرَّحِيمِ",
+        latin: "Ar-rahmaanir-rahiim",
+        translation: "Yang Maha Pengasih, Maha Penyayang,"
+      },
+      {
+        id: 4,
+        arabic: "مَالِكِ يَوْمِ الدِّينِ",
+        latin: "Maaliki yawmid-diin",
+        translation: "Pemilik hari pembalasan."
+      },
+      {
+        id: 5,
+        arabic: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+        latin: "Iyyaaka na'budu wa iyyaaka nasta'iin",
+        translation: "Hanya kepada Engkaulah kami menyembah dan hanya kepada Engkaulah kami mohon pertolongan."
+      },
+      {
+        id: 6,
+        arabic: "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
+        latin: "Ihdinash-shiraathal-mustaqiim",
+        translation: "Tunjukilah kami jalan yang lurus,"
+      },
+      {
+        id: 7,
+        arabic: "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+        latin: "Shiraathal-ladziina an'amta 'alaihim ghayril-maghdhuubi 'alaihim wa ladh-dhaalliin",
+        translation: "(yaitu) jalan orang-orang yang telah Engkau beri nikmat kepadanya; bukan (jalan) mereka yang dimurkai, dan bukan (pula jalan) mereka yang sesat."
+      }
+    ]
+  };
+
+  const handlePlayAudio = (verseId: number) => {
+    // Simulasi play audio
+    setPlayingId(verseId);
+    setTimeout(() => {
+      setPlayingId(null);
+    }, 4000); // Stop setelah 4 detik
+  };
+
+  // Jika ID bukan 1, tampilkan error ringan
+  if (id !== "1") {
+    return (
+      <div className="flex h-screen w-full bg-[#FAF8F1] overflow-hidden font-sans">
+        <Sidebar activePath="/ayat" />
+        <main className="flex-1 flex items-center justify-center flex-col">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Surat Belum Tersedia</h2>
+          <Link href="/ayat" className="px-6 py-2 bg-[#1885A4] text-white rounded-full hover:bg-[#146e87]">
+            Kembali ke Daftar Surat
+          </Link>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-screen w-full bg-[#FAF8F1] overflow-hidden font-sans">
+      
+      {/* ═══════════════ SIDEBAR ═══════════════ */}
+      <Sidebar activePath="/ayat" />
+
+      {/* ═══════════════ MAIN CONTENT ═══════════════ */}
+      <main className="flex-1 flex flex-col h-full overflow-hidden relative">
+        
+        {/* Decorative pattern */}
+        <div className="absolute top-0 right-0 w-96 h-96 opacity-[0.03] pointer-events-none">
+          <svg viewBox="0 0 100 100" fill="currentColor">
+            <path d="M50 0L57 30L85 15L70 43L100 50L70 57L85 85L57 70L50 100L43 70L15 85L30 57L0 50L30 43L15 15L43 30Z" />
+          </svg>
+        </div>
+
+        {/* Header */}
+        <header className="px-8 pt-8 pb-4 flex flex-col z-10 shrink-0 bg-white/60 backdrop-blur-md border-b border-gray-100">
+          <div className="flex items-center gap-4 mb-4">
+            <Link href="/ayat" className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#1885A4] hover:border-[#1885A4] transition-colors shadow-sm">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7"/></svg>
+            </Link>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                {surahData.nameLatin} 
+                <span className="text-[#1885A4] font-arabic font-normal text-3xl mt-1">({surahData.nameArabic})</span>
+              </h2>
+              <div className="flex items-center gap-3 text-sm text-gray-500 mt-1 font-medium">
+                <span className="uppercase tracking-widest text-[11px]">{surahData.translation}</span>
+                <span className="text-gray-300">•</span>
+                <span>{surahData.ayahCount} Ayat</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Verses List */}
+        <div className="flex-1 overflow-y-auto px-8 pb-12 pt-6 custom-scrollbar z-10">
+          <div className="flex flex-col gap-6 max-w-4xl mx-auto">
+            {surahData.verses.map((verse) => (
+              <div 
+                key={verse.id} 
+                className={`bg-white rounded-3xl p-6 md:p-8 border shadow-sm transition-all duration-300 ${
+                  playingId === verse.id 
+                    ? 'border-[#1885A4] shadow-[0_10px_30px_rgba(24,133,164,0.1)] ring-4 ring-[#1885A4]/10' 
+                    : 'border-gray-100 hover:border-gray-200 hover:shadow-md'
+                }`}
+              >
+                
+                <div className="flex flex-col md:flex-row gap-6">
+                  {/* Left Controls (Number & Audio) */}
+                  <div className="flex flex-row md:flex-col items-center justify-between md:justify-start gap-4 shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500 font-bold">
+                      {verse.id}
+                    </div>
+                    <button 
+                      onClick={() => handlePlayAudio(verse.id)}
+                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-transform hover:scale-110 ${
+                        playingId === verse.id 
+                          ? 'bg-emerald-50 text-emerald-500 border border-emerald-200' 
+                          : 'bg-[#1885A4]/10 text-[#1885A4] border border-[#1885A4]/20 hover:bg-[#1885A4] hover:text-white'
+                      }`}
+                      title="Dengarkan Ayat"
+                    >
+                      {playingId === verse.id ? (
+                        <div className="flex gap-0.5 items-center justify-center h-4">
+                          <span className="w-1 bg-emerald-500 h-2/4 animate-bounce" style={{animationDelay: '0s'}}></span>
+                          <span className="w-1 bg-emerald-500 h-full animate-bounce" style={{animationDelay: '0.1s'}}></span>
+                          <span className="w-1 bg-emerald-500 h-3/4 animate-bounce" style={{animationDelay: '0.2s'}}></span>
+                        </div>
+                      ) : (
+                        <svg className="w-4 h-4 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Right Content (Arabic & Translation) */}
+                  <div className="flex-1 flex flex-col">
+                    {/* Arabic Text (Right Aligned) */}
+                    <div className="text-right mb-6">
+                      <p className="font-arabic text-4xl md:text-5xl leading-[2.2] text-gray-900" dir="rtl">
+                        {verse.arabic}
+                      </p>
+                    </div>
+
+                    {/* Divider */}
+                    <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-100 to-transparent mb-5"></div>
+
+                    {/* Latin & Translation (Left Aligned) */}
+                    <div className="flex flex-col gap-2">
+                      <p className="text-[#1885A4] font-medium text-sm">
+                        {verse.latin}
+                      </p>
+                      <p className="text-gray-600 text-sm leading-relaxed">
+                        {verse.translation}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            ))}
+          </div>
+          
+          <div className="mt-8 text-center pb-8">
+            <Link href="/ayat" className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-200 rounded-full text-sm font-bold text-gray-700 hover:bg-gray-50 hover:text-[#1885A4] transition-colors shadow-sm">
+              Selesai Membaca
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/></svg>
+            </Link>
+          </div>
+        </div>
+      </main>
+
+      {/* Custom styles */}
+      <style dangerouslySetInnerHTML={{__html: `
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background-color: #e5e7eb;
+          border-radius: 10px;
+        }
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+          background-color: #d1d5db;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
+        .font-arabic {
+          font-family: 'Amiri', serif;
+        }
+      `}} />
+    </div>
+  );
+}

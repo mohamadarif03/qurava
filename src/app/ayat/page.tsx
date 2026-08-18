@@ -2,6 +2,7 @@
 
 import React from "react";
 import Sidebar from "@/components/Sidebar";
+import Link from "next/link";
 
 export default function AyatPendekPage() {
   const surahList = [
@@ -102,23 +103,40 @@ export default function AyatPendekPage() {
         {/* Content Area (List View) */}
         <div className="flex-1 overflow-y-auto px-8 pb-12 custom-scrollbar z-10">
           <div className="flex flex-col gap-4 w-full">
-            {surahList.map((surah, idx) => (
-              <div 
+            {surahList.map((surah, idx) => {
+              const isLocked = idx > 0; // Lock everything except the first one (Al-Fatihah)
+              
+              return (
+              <Link 
+                href={isLocked ? "#" : `/ayat/${surah.id}`}
                 key={idx} 
-                className="bg-white rounded-3xl p-5 md:p-6 border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col md:flex-row items-center gap-6 group cursor-pointer"
+                className={`rounded-3xl p-5 md:p-6 border flex flex-col md:flex-row items-center gap-6 relative overflow-hidden transition-all duration-300 ${
+                  isLocked 
+                    ? 'bg-gray-50/50 border-gray-100 opacity-60 cursor-not-allowed grayscale block' 
+                    : 'bg-white border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-lg hover:-translate-y-1 group cursor-pointer block'
+                }`}
               >
+                {/* Lock Overlay Icon */}
+                {isLocked && (
+                  <div className="absolute top-4 right-4 md:top-6 md:right-6 text-gray-400">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                  </div>
+                )}
+
                 {/* Surah Number (Decorative) */}
                 <div className="relative w-14 h-14 flex items-center justify-center shrink-0">
-                  <svg className="absolute inset-0 w-full h-full text-gray-100 group-hover:text-[#1885A4]/10 transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className={`absolute inset-0 w-full h-full transition-colors ${isLocked ? 'text-gray-200' : 'text-gray-100 group-hover:text-[#1885A4]/10'}`} fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2L14.4 7.6L20.5 8.2L15.9 12.3L17.2 18.2L12 15.2L6.8 18.2L8.1 12.3L3.5 8.2L9.6 7.6L12 2Z" />
                   </svg>
-                  <span className="relative z-10 text-sm font-bold text-gray-500 group-hover:text-[#1885A4] transition-colors">{surah.number}</span>
+                  <span className={`relative z-10 text-sm font-bold transition-colors ${isLocked ? 'text-gray-400' : 'text-gray-500 group-hover:text-[#1885A4]'}`}>{surah.number}</span>
                 </div>
 
                 {/* Surah Details */}
                 <div className="flex-1 text-center md:text-left w-full">
                   <div className="flex flex-col md:flex-row md:items-center justify-between mb-2 gap-2">
-                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-[#1885A4] transition-colors">
+                    <h3 className={`text-xl font-bold transition-colors ${isLocked ? 'text-gray-500' : 'text-gray-900 group-hover:text-[#1885A4]'}`}>
                       {surah.nameLatin}
                     </h3>
                     <span className="font-arabic font-bold text-2xl text-gray-800">
@@ -141,7 +159,7 @@ export default function AyatPendekPage() {
                       <svg className="w-full h-full absolute inset-0 -rotate-90" viewBox="0 0 36 36">
                         <path className="text-gray-100" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                         <path 
-                          className={surah.progress === 100 ? "text-emerald-500" : surah.progress > 0 ? "text-[#1885A4]" : "text-transparent"} 
+                          className={isLocked ? "text-transparent" : surah.progress === 100 ? "text-emerald-500" : surah.progress > 0 ? "text-[#1885A4]" : "text-transparent"} 
                           strokeWidth="3" 
                           strokeDasharray={`${surah.progress}, 100`} 
                           strokeLinecap="round" 
@@ -150,20 +168,31 @@ export default function AyatPendekPage() {
                           d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" 
                         />
                       </svg>
-                      <span className={`text-[10px] font-bold ${surah.progress === 100 ? "text-emerald-500" : "text-gray-500"}`}>
+                      <span className={`text-[10px] font-bold ${isLocked ? 'text-gray-400' : surah.progress === 100 ? "text-emerald-500" : "text-gray-500"}`}>
                         {surah.progress}%
                       </span>
                     </div>
                   </div>
 
                   {/* Play / Learn Button */}
-                  <button className={`w-12 h-12 rounded-full flex items-center justify-center shadow-sm transition-transform hover:scale-105 shrink-0 ${surah.progress === 100 ? 'bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100' : 'bg-[#1885A4] text-white shadow-[#1885A4]/20 hover:bg-[#136b85]'}`}>
-                    <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                  </button>
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-sm shrink-0 transition-all ${
+                    isLocked 
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : surah.progress === 100 
+                        ? 'bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100 hover:scale-105' 
+                        : 'bg-[#1885A4] text-white shadow-[#1885A4]/20 hover:bg-[#136b85] hover:scale-105'
+                  }`}>
+                    {isLocked ? (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    ) : (
+                      <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    )}
+                  </div>
                 </div>
 
-              </div>
-            ))}
+              </Link>
+              );
+            })}
           </div>
         </div>
       </main>

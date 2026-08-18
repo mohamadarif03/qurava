@@ -1,19 +1,16 @@
-# Walkthrough: Fitur Perekam Suara Pengguna (Voice Recording)
+# Walkthrough: Integrasi AI MediaPipe Hands
 
-## 1. Tombol Mikrofon Terintegrasi
-Saya telah menambahkan sebuah tombol khusus berlogo **Mikrofon** tepat di sebelah tombol "Putar Audio" di halaman detail huruf.
-- Saat tombol mikrofon ini ditekan untuk pertama kalinya, aplikasi akan meminta izin akses mikrofon (melalui *browser prompt* standar).
-- Jika tombol ini ditekan, aplikasi akan mulai merekam suara Anda melalui mikrofon bawaan (*built-in*) perangkat.
+## 1. Instalasi AI Pihak Ketiga
+Saya telah berhasil menginstal dan menyematkan pustaka AI buatan Google (*MediaPipe Hands*) secara langsung ke dalam aplikasi Anda. Pustaka ini sangat ringan dan dioptimalkan khusus untuk pelacakan tangan di *browser*.
 
-## 2. Umpan Balik Visual yang Intuitif
-Agar Anda tidak bingung apakah suara sedang direkam atau tidak, saya mendesain UI (*User Interface*) agar berubah secara dramatis saat merekam:
-- Huruf Arab dan teks di bawahnya akan berubah warna menjadi **Merah**.
-- Tombol mikrofon akan memancarkan cahaya merah yang berkedip pelan (*pulse*).
-- Gelombang suara (*sound wave visualizer*) berwarna merah akan muncul dan menari-nari di bawah layar sebagai indikator visual perekaman.
+## 2. Pengalaman Pengguna (AI Tracking)
+- **Proses Pemuatan:** Ketika halaman baru dibuka, Anda akan melihat indikator kuning "MEMUAT MODEL AI...". Pada tahap ini, *browser* sedang menarik data kecerdasan buatan dari server.
+- **Kanvas Interaktif:** Setelah berhasil dimuat, AI akan mulai menyala. Coba letakkan tangan Anda di depan kamera! Anda akan langsung melihat garis-garis kerangka (*landmarks*) digambar di atas tulang jari-jari Anda. Setiap sendi dilacak dengan ketelitian tinggi secara seketika (*real-time*).
 
-## 3. Fitur Putar Ulang Rekaman (*Playback*)
-Begitu Anda menekan tombol mikrofon lagi untuk menghentikan rekaman:
-- Hasil tangkapan suara Anda akan dikemas (*encode*) secara *real-time* ke dalam *memori browser* Anda (sangat aman, tidak diunggah ke internet).
-- Sebuah tombol baru berjudul **"Dengarkan Rekaman Anda"** akan muncul ke permukaan (dari bawah layar).
-- Mengeklik tombol tersebut akan memutar ulang suara Anda. Anda bisa memutar suara panduan asli, lalu memutar suara Anda secara bergantian untuk membandingkan pelafalannya! 
-- Jika Anda merasa pelafalan Anda masih kurang pas, cukup tekan tombol mikrofon lagi untuk menimpa rekaman tersebut dengan rekaman yang baru.
+## 3. Logika Pendeteksi Jari (Alif)
+Tombol "Deteksi 'Alif' Sekarang" bukan lagi sekadar simulasi waktu. Ketika Anda mengekliknya, algoritma AI mulai berhitung berdasarkan titik koordinat ujung jari (Y-axis):
+1. **Jari Telunjuk (*Index*):** AI akan memastikan bahwa ujung jari telunjuk (Titik #8) berada jauh lebih tinggi (nilai Y lebih kecil) dibandingkan pangkalnya.
+2. **Jari Lainnya:** AI memastikan jari tengah, manis, kelingking, dan jempol posisinya terlipat / berada di bawah telunjuk.
+3. **Kemenangan:** Jika bentuk geometri ini berhasil ditangkap oleh AI dalam keadaan stabil, barulah layar berubah sukses memunculkan hamparan hijau! 
+
+Ini adalah fondasi yang sungguh luar biasa, kita bisa membuat ratusan kombinasi sandi gestur dari titik koordinat jari ini!

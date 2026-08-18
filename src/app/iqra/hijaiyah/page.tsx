@@ -1,10 +1,48 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function HijaiyahDetailPage() {
+  const router = useRouter();
+  const [accMode, setAccMode] = useState<string>("reguler");
+
+  useEffect(() => {
+    const mode = localStorage.getItem("accessibility_mode") || "reguler";
+    setAccMode(mode);
+    if (mode === "tunanetra") {
+      window.speechSynthesis.cancel();
+      const msg = new SpeechSynthesisUtterance("Anda berada di menu huruf Hijaiyah. Tekan tombol Tab untuk menyusuri daftar huruf. Tekan Enter untuk memilih.");
+      msg.lang = 'id-ID';
+      window.speechSynthesis.speak(msg);
+    }
+  }, []);
+
+  const speakNav = (text: string) => {
+    if (accMode === "tunanetra") {
+      window.speechSynthesis.cancel();
+      const msg = new SpeechSynthesisUtterance(text);
+      msg.lang = 'id-ID';
+      window.speechSynthesis.speak(msg);
+    }
+  };
+
+  const handleLetterClick = (letterId: string, letterName: string) => {
+    if (accMode === "tunanetra") {
+      window.speechSynthesis.cancel();
+      const msg = new SpeechSynthesisUtterance(`Memasuki pelatihan huruf ${letterName}`);
+      msg.lang = 'id-ID';
+      window.speechSynthesis.speak(msg);
+      router.push(`/iqra/hijaiyah/${letterId}`);
+    } else if (accMode === "tunarungu") {
+      router.push(`/iqra/hijaiyah/${letterId}/gesture`);
+    } else {
+      router.push(`/iqra/hijaiyah/${letterId}`);
+    }
+  };
+
   const hijaiyahLetters = [
     { id: "alif", char: "ا", name: "Alif" },
     { id: "baa", char: "ب", name: "Ba" },
@@ -57,7 +95,12 @@ export default function HijaiyahDetailPage() {
         
         {/* Header */}
         <header className="px-10 pt-10 pb-8 flex flex-col gap-4 shrink-0 border-b border-gray-200/40 bg-white/30 backdrop-blur-md">
-          <Link href="/iqra" className="inline-flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-[#1885A4] transition-colors w-fit group">
+          <Link 
+            href="/iqra" 
+            onFocus={() => speakNav("Tombol Kembali ke Modul Utama Iqra")}
+            onMouseEnter={() => speakNav("Tombol Kembali ke Modul Utama Iqra")}
+            className="inline-flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-[#1885A4] transition-colors w-fit group outline-none focus:ring-2 focus:ring-[#1885A4] focus:text-[#1885A4] rounded-lg px-2 py-1 -ml-2"
+          >
             <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
             </svg>
@@ -137,9 +180,13 @@ export default function HijaiyahDetailPage() {
               }
 
               return (
-                <Link key={idx} href={`/iqra/hijaiyah/${letter.id}`} className="block h-full outline-none focus:ring-2 focus:ring-[#1885A4]/50 rounded-3xl">
+                <button 
+                  key={idx} 
+                  onClick={() => handleLetterClick(letter.id, letter.name)}
+                  className="block h-full outline-none focus:ring-2 focus:ring-[#1885A4]/50 rounded-3xl text-left"
+                >
                   {CardContent}
-                </Link>
+                </button>
               );
             })}
           </div>

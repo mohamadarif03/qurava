@@ -1,33 +1,33 @@
-# Rencana Implementasi: Fitur Perekam Suara Pengguna (Voice Recording)
+# Rencana Implementasi: Integrasi Deteksi Jari AI (MediaPipe)
 
 ## Latar Belakang
-Selain mendengarkan audio panduan (`.mp3`), pengguna ingin dapat merekam suara mereka sendiri saat mencoba menirukan pelafalan huruf. Ini adalah langkah kunci menuju fitur *Voice Recognition* yang seutuhnya.
+Pengguna meminta agar simulasi deteksi tangan diganti dengan *Artificial Intelligence* (AI) sungguhan yang mampu melacak pergerakan dan sendi jari secara *real-time*. Teknologi yang paling tepat dan canggih untuk hal ini adalah **MediaPipe Hands** (buatan Google) atau **TensorFlow.js**.
 
 ## Proposed Changes
 
-### [MODIFY] `src/app/iqra/hijaiyah/[id]/page.tsx`
-Saya akan merombak halaman detail ini untuk memasukkan fitur mikrofon (Web Audio API / MediaRecorder):
+### [NEW DEPENDENCIES]
+Saya akan menginstal paket dari Google MediaPipe ke dalam proyek Next.js Anda:
+- `@mediapipe/hands`: Model AI utama untuk mendeteksi 21 titik sendi (landmark) tangan.
+- `@mediapipe/camera_utils`: Untuk mengelola *frame* kamera secara efisien.
+- `@mediapipe/drawing_utils`: (Opsional) untuk menggambar kerangka tangan di layar agar *user* bisa melihat bahwa tangannya sedang dilacak oleh AI.
 
-1. **Tombol Rekam Baru (Microphone):**
-   - Akan ditambahkan tombol baru berikon Mikrofon di sebelah (atau di bawah) tombol "Putar Suara" yang sudah ada.
-   
-2. **Sistem Perekaman (*MediaRecorder API*):**
-   - Meminta izin akses mikrofon (*microphone permissions*) dari peramban/browser pengguna.
-   - Saat tombol ditekan dan ditahan (atau diklik sekali untuk mulai, klik lagi untuk berhenti), sistem akan merekam suara pengguna.
-   - Saat proses merekam berjalan, tombol akan memancarkan cahaya merah (*red glow*) dan akan ada efek gelombang suara responsif untuk memberi umpan balik visual bahwa suara sedang ditangkap.
+### [MODIFY] `src/app/iqra/hijaiyah/[id]/gesture/page.tsx`
+Saya akan mengubah halaman cermin *webcam* yang sudah ada menjadi aplikasi AI sungguhan:
+1. **Inisialisasi AI:** Menambahkan logika pemuatan model MediaPipe Hands saat halaman dibuka.
+2. **Kanvas Pelacakan (*Canvas*):** Menambahkan elemen `<canvas>` di atas `<video>` untuk menggambar kerangka (titik-titik sendi) jari pengguna secara *real-time* (mirip filter Instagram/TikTok).
+3. **Logika Pengenalan "Alif":**
+   - MediaPipe akan mengembalikan koordinat X dan Y dari 21 sendi tangan.
+   - Saya akan membuat algoritma matematika geometri sederhana:
+     - Jari Telunjuk (*Index Finger*) harus mengarah lurus ke atas (posisi Y ujung jari < pangkal jari).
+     - Jari lainnya (Tengah, Manis, Kelingking) harus mengepal/tertutup (posisi Y ujung jari > pangkal jari).
+   - Jika kondisi ini terpenuhi terus menerus selama 2 detik (saat sedang "Mendeteksi"), AI akan menyatakan Sukses!
 
-3. **Pemutar Hasil Rekaman (*Playback*):**
-   - Setelah selesai merekam, hasil rekaman pengguna akan diubah menjadi file audio sementara (Blob URL) di dalam memori peramban.
-   - Akan muncul tombol baru: **"Dengarkan Rekaman Anda"**.
-   - Pengguna bisa memutar ulang rekaman tersebut berulang kali untuk membandingkannya dengan suara contoh (audio panduan).
-   - Akan disediakan pula tombol **"Rekam Ulang"** jika dirasa belum pas.
-
-## User Review Required
+## Open Questions
 > [!IMPORTANT]
-> Mengingat fitur ini membutuhkan izin akses perangkat keras (Mikrofon), browser mungkin akan memunculkan *pop-up* "Allow Microphone" saat pertama kali diuji.
+> Menggunakan model AI di dalam browser akan membuat halaman ini sedikit lebih lambat saat pertama kali dimuat (karena harus mengunduh file model AI sebesar beberapa Megabyte). Apakah tidak apa-apa?
+> Selain itu, karena instalasi MediaPipe di Next.js terkadang menemui kendala *WebPack*, saya akan mengusahakan konfigurasi terbaiknya.
 
 ## Verification Plan
-1. Masuk ke rute `/iqra/hijaiyah/alif`.
-2. Tekan tombol Mikrofon. Izinkan akses pada *browser prompt*.
-3. Bicaralah dan pastikan UI berubah untuk menandakan sedang merekam (merah).
-4. Hentikan rekaman, lalu tekan Play pada hasil rekamannya. Pastikan suara pengguna terdengar jelas.
+1. Saat membuka `localhost:3000/iqra/hijaiyah/alif/gesture`, Anda akan melihat wajah Anda, dan jika Anda memasukkan tangan ke layar, AI akan **menggambar jaring-jaring kerangka hijau/merah di atas jari Anda**.
+2. Saat Anda mengacungkan jari telunjuk ke atas dan mengepal jari lainnya (seperti angka 1), AI akan mengenalinya sebagai Alif.
+3. Jika Anda membuka jari tangan lebar-lebar (kertas), AI tidak akan merespons.

@@ -1,5 +1,6 @@
-- [x] Rencana Implementasi: Fitur Perekam Suara Pengguna (Voice Recording)
-- [x] Tambahkan tombol mikrofon di UI detail.
-- [x] Implementasikan MediaRecorder API (start, stop, permissions).
-- [x] Buat UI untuk status merekam (indikator merah) dan pemutar ulang rekaman.
-- [x] Validasi fitur.
+- [x] Rencana Implementasi: Integrasi Deteksi Jari AI (MediaPipe)
+- [x] Instal dependensi `@mediapipe/hands`, `@mediapipe/camera_utils`, `@mediapipe/drawing_utils`.
+- [x] Modifikasi UI di `src/app/iqra/hijaiyah/[id]/gesture/page.tsx` dengan elemen `<canvas>` menimpa `<video>`.
+- [x] Buat logika inisialisasi AI (menghubungkan video ke model MediaPipe).
+- [x] Buat fungsi geometri matematika pendeteksi bentuk jari "Alif" (Telunjuk ke atas, lainnya mengepal).
+- [x] Jalankan dan Verifikasi AI di browser.
