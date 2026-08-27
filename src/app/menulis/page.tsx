@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Sidebar from "@/components/Sidebar";
+import { classifyCanvas } from "@/services/writing-service";
 
 export default function MenulisPage() {
   const [activeLetter, setActiveLetter] = useState("alif");
@@ -15,7 +16,7 @@ export default function MenulisPage() {
   // Tracking points for evaluation
   const strokePointsRef = useRef<{x: number, y: number}[]>([]);
 
-  // Mock AI Evaluation States
+  // AI evaluation state
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [evalResult, setEvalResult] = useState<{ score: number, message: string } | null>(null);
 
@@ -53,16 +54,28 @@ export default function MenulisPage() {
   const kataDasar = ["ص", "ع", "ذ", "م"];
   const activeDef = hijaiyah.find(h => h.id === activeLetter);
 
+  const clearCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    strokePointsRef.current = [];
+    setEvalResult(null);
+  }, []);
+
   // Resize canvas to fit its container on mount
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
       const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
       
       const ctx = canvas.getContext("2d");
       if (ctx) {
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
       }
@@ -72,7 +85,7 @@ export default function MenulisPage() {
   // Clear canvas when letter changes
   useEffect(() => {
     clearCanvas();
-  }, [activeLetter]);
+  }, [activeLetter, clearCanvas]);
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
@@ -145,120 +158,34 @@ export default function MenulisPage() {
     setIsDrawing(false);
   };
 
-  const clearCanvas = () => {
+  const evaluateDrawing = async () => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    strokePointsRef.current = [];
-    setEvalResult(null);
-  };
+    if (!canvas || isEvaluating) return;
 
-  const evaluateDrawing = () => {
     setIsEvaluating(true);
     setEvalResult(null);
 
-    // Mock evaluation delay (1.5 seconds)
-    setTimeout(() => {
-      setIsEvaluating(false);
-      
-      const points = strokePointsRef.current;
-
-      if (points.length < 5) {
+    try {
+      if (strokePointsRef.current.length < 5) {
         setEvalResult({ score: 0, message: "Kertas masih kosong! Silakan tulis sesuatu terlebih dahulu." });
         return;
       }
 
-      let finalScore = 0;
-      let finalMessage = "";
+      const result = await classifyCanvas(canvas, activeDef?.char ?? "ا");
+      const score = Math.round(result.score * 100);
+      const message = result.correct
+        ? score >= 90
+          ? "Luar biasa! Bentuk tulisanmu sangat mirip dengan huruf contoh."
+          : "Bagus! Bentuk tulisanmu sudah cukup mirip. Terus berlatih agar goresannya semakin presisi."
+        : "Coba ikuti garis bayangan dengan lebih perlahan agar bentuk hurufnya semakin mirip.";
 
-      if (activeLetter === "alif") {
-        // --- VECTOR PATH ALGORITHM FOR ALIF ---
-        // Alif is ideally a vertical straight line at the center of the canvas.
-        const canvas = canvasRef.current;
-        const centerX = canvas ? canvas.width / 2 : 250;
-        
-        let totalDeviation = 0;
-        let minY = points[0].y;
-        let maxY = points[0].y;
-        
-        for(let pt of points) {
-           totalDeviation += Math.abs(pt.x - centerX);
-           if (pt.y < minY) minY = pt.y;
-           if (pt.y > maxY) maxY = pt.y;
-        }
-        
-        const avgDeviation = totalDeviation / points.length;
-        const strokeHeight = maxY - minY;
-        
-        let score = 100;
-        
-        // Penalty for being off-center or wavy
-        if (avgDeviation > 30) score -= (avgDeviation - 30) * 1.2;
-        
-        // Penalty for being too short (Alif should be tall)
-        if (strokeHeight < 120) score -= (120 - strokeHeight) * 0.4;
-        
-        // Bound score
-        finalScore = Math.max(10, Math.min(100, Math.round(score)));
-
-        if (finalScore >= 90) finalMessage = "Luar biasa! Garis Alif Anda sangat tegak dan berada tepat di tengah (sesuai kaidah).";
-        else if (finalScore >= 70) finalMessage = "Bagus! Namun garis Alif masih sedikit bengkok atau kurang tinggi.";
-        else finalMessage = "Coretan terlalu melenceng dari panduan lurus Alif. Coba ikuti garis bayangannya pelan-pelan ya!";
-
-      } else if (activeLetter === "ba") {
-        // --- VECTOR PATH ALGORITHM FOR BA ---
-        // Ba is a wide boat-like shape. We use bounding box heuristics.
-        let minX = points[0].x;
-        let maxX = points[0].x;
-        let minY = points[0].y;
-        let maxY = points[0].y;
-        
-        for(let pt of points) {
-           if (pt.x < minX) minX = pt.x;
-           if (pt.x > maxX) maxX = pt.x;
-           if (pt.y < minY) minY = pt.y;
-           if (pt.y > maxY) maxY = pt.y;
-        }
-
-        const width = maxX - minX;
-        const height = maxY - minY;
-        
-        let score = 100;
-
-        // Ba must be significantly wide
-        if (width < 150) {
-          score -= (150 - width) * 0.8;
-        }
-
-        // Ba should be horizontal, not vertical. If height > width, it's very wrong.
-        if (height > width) {
-          score -= (height - width) * 0.5;
-        }
-
-        // Check if there's a dot? Simplified: just reward wide strokes with moderate height
-        if (height < 30) {
-           // Too flat, maybe just a dash
-           score -= 20;
-        }
-
-        finalScore = Math.max(10, Math.min(100, Math.round(score)));
-
-        if (finalScore >= 90) finalMessage = "Tepat sekali! Bentuk perahu dari huruf Ba terlihat mendatar dan proporsional.";
-        else if (finalScore >= 70) finalMessage = "Cukup baik, tetapi coba buat cekungannya lebih seimbang dan panjang.";
-        else finalMessage = "Sepertinya proporsinya kurang tepat. Ingat, Ba harus mendatar lebar ke samping, bukan meninggi ke atas.";
-
-      } else {
-        // --- RANDOM SIMULATION FOR OTHER LETTERS ---
-        finalScore = Math.floor(Math.random() * 41) + 60;
-        if (finalScore >= 90) finalMessage = "Sempurna! Proporsi dan arah tulisan sudah sangat tepat layaknya ahli.";
-        else if (finalScore >= 75) finalMessage = "Bagus! Terus berlatih agar goresan lebih halus dan presisi.";
-        else finalMessage = "Cukup baik, tapi masih perlu mengikuti garis panduan (tracing) dengan lebih perlahan.";
-      }
-
-      setEvalResult({ score: finalScore, message: finalMessage });
-    }, 1500);
+      setEvalResult({ score, message });
+    } catch (error) {
+      console.error("Gagal mengevaluasi tulisan:", error);
+      setEvalResult({ score: 0, message: "Tulisan belum dapat dinilai. Silakan coba lagi." });
+    } finally {
+      setIsEvaluating(false);
+    }
   };
 
   return (
@@ -327,8 +254,8 @@ export default function MenulisPage() {
                 <div className="p-5 flex-1 flex flex-col overflow-hidden">
                   <h3 className="font-bold text-gray-800 mb-3 text-[15px]">Daftar Huruf Hijaiyah</h3>
                   <div className="grid grid-cols-4 gap-1.5 overflow-y-auto pr-1 custom-scrollbar flex-1">
-                    {hijaiyah.map((item, idx) => {
-                      const isLocked = idx >= 2; // Lock from 'Ta' onwards
+                    {hijaiyah.map((item) => {
+                      const isLocked = false;
                       
                       return (
                         <button

@@ -4,12 +4,69 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
+import { useRecorder } from "@/hooks/use-recorder";
+import { transcribeAudio } from "@/services/audio-service";
 
-const hijaiyahData: Record<string, { char: string, name: string, audio: string }> = {
-  "alif": { char: "ا", name: "Alif", audio: "/audio/hijaiyah/alif.mp3" },
-  "baa": { char: "ب", name: "Ba", audio: "/audio/hijaiyah/baa.mp3" },
-  "ta": { char: "ت", name: "Ta", audio: "/audio/hijaiyah/ta.mp3" },
+type LetterData = {
+  char: string;
+  name: string;
+  audio?: string;
+  aliases: string[];
 };
+
+const hijaiyahData: Record<string, LetterData> = {
+  "alif": { char: "ا", name: "Alif", audio: "/audio/hijaiyah/alif.mp3", aliases: ["alif", "الف", "ألف", "ا"] },
+  "baa": { char: "ب", name: "Ba", audio: "/audio/hijaiyah/baa.mp3", aliases: ["ba", "baa", "باء", "ب"] },
+  "ta": { char: "ت", name: "Ta", audio: "/audio/hijaiyah/ta.mp3", aliases: ["ta", "taa", "تاء", "ت"] },
+  "tsa": { char: "ث", name: "Tsa", aliases: ["tsa", "tsaa", "ثاء", "ث"] },
+  "jim": { char: "ج", name: "Jim", aliases: ["jim", "jiim", "جيم", "ج"] },
+  "ha1": { char: "ح", name: "Ha", aliases: ["ha", "haa", "حاء", "ح"] },
+  "kha": { char: "خ", name: "Kha", aliases: ["kha", "khaa", "خاء", "خ"] },
+  "dal": { char: "د", name: "Dal", aliases: ["dal", "daal", "دال", "د"] },
+  "dzal": { char: "ذ", name: "Dzal", aliases: ["dzal", "dhal", "dzaal", "ذال", "ذ"] },
+  "ra": { char: "ر", name: "Ra", aliases: ["ra", "raa", "راء", "ر"] },
+  "zai": { char: "ز", name: "Zai", aliases: ["zai", "zay", "zaay", "زاي", "ز"] },
+  "sin": { char: "س", name: "Sin", aliases: ["sin", "siin", "سين", "س"] },
+  "syin": { char: "ش", name: "Syin", aliases: ["syin", "shin", "shiin", "شين", "ش"] },
+  "shad": { char: "ص", name: "Shad", aliases: ["shad", "saad", "صاد", "ص"] },
+  "dhad": { char: "ض", name: "Dhad", aliases: ["dhad", "dhaad", "ضاد", "ض"] },
+  "tha": { char: "ط", name: "Tha", aliases: ["tha", "thaa", "طاء", "ط"] },
+  "zha": { char: "ظ", name: "Zha", aliases: ["zha", "zaa", "ظاء", "ظ"] },
+  "ain": { char: "ع", name: "Ain", aliases: ["ain", "ayn", "عين", "ع"] },
+  "ghain": { char: "غ", name: "Ghain", aliases: ["ghain", "ghayn", "غين", "غ"] },
+  "fa": { char: "ف", name: "Fa", aliases: ["fa", "faa", "فاء", "ف"] },
+  "qaf": { char: "ق", name: "Qaf", aliases: ["qaf", "qaaf", "قاف", "ق"] },
+  "kaf": { char: "ك", name: "Kaf", aliases: ["kaf", "kaaf", "كاف", "ك"] },
+  "lam": { char: "ل", name: "Lam", aliases: ["lam", "laam", "لام", "ل"] },
+  "mim": { char: "م", name: "Mim", aliases: ["mim", "miim", "ميم", "م"] },
+  "nun": { char: "ن", name: "Nun", aliases: ["nun", "nuun", "نون", "ن"] },
+  "waw": { char: "و", name: "Waw", aliases: ["waw", "waaw", "واو", "و"] },
+  "ha2": { char: "ه", name: "Ha", aliases: ["ha", "haa", "هاء", "ه"] },
+  "ya": { char: "ي", name: "Ya", aliases: ["ya", "yaa", "ياء", "ي"] },
+};
+
+type SpeechResult = {
+  correct: boolean;
+  transcript?: string;
+  error?: boolean;
+};
+
+const normalizeSpeech = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[ً-ٟؐ-ؚٰ]/g, "")
+    .replace(/[^\p{L}\p{N}\u0600-\u06ff]/gu, "");
+
+const matchesSpeech = (transcript: string, aliases: string[]) => {
+  const cleanTranscript = normalizeSpeech(transcript);
+  if (!cleanTranscript) return false;
+  return aliases.some((alias) => {
+    const cleanAlias = normalizeSpeech(alias);
+    return cleanTranscript.includes(cleanAlias) || cleanAlias.includes(cleanTranscript);
+  });
+};
+
+const waveformHeights = [12, 20, 15, 28, 18, 24, 10, 22, 16, 26, 14, 19];
 
 export default function HijaiyahDetailPage() {
   const params = useParams();
@@ -20,18 +77,16 @@ export default function HijaiyahDetailPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Recording States
-  const [isRecording, setIsRecording] = useState(false);
   const [recordedAudioUrl, setRecordedAudioUrl] = useState<string | null>(null);
   const [isPlayingRecord, setIsPlayingRecord] = useState(false);
-  
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<BlobPart[]>([]);
   const userAudioRef = useRef<HTMLAudioElement | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [speechResult, setSpeechResult] = useState<SpeechResult | null>(null);
+  const { isRecording, start, stop } = useRecorder();
 
   // Init base audio
   useEffect(() => {
-    if (letter) {
+    if (letter?.audio) {
       audioRef.current = new Audio(letter.audio);
       audioRef.current.onended = () => setIsPlaying(false);
     }
@@ -44,7 +99,7 @@ export default function HijaiyahDetailPage() {
   }, [letter]);
 
   const toggleAudio = () => {
-    if (!audioRef.current) return;
+    if (!letter?.audio || !audioRef.current) return;
     if (isPlaying) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
@@ -55,49 +110,41 @@ export default function HijaiyahDetailPage() {
     }
   };
 
-  const startRecording = async () => {
+  const handleBlob = async (blob: Blob) => {
+    if (!letter) return;
+
+    if (recordedAudioUrl) URL.revokeObjectURL(recordedAudioUrl);
+    setRecordedAudioUrl(URL.createObjectURL(blob));
+    setIsAnalyzing(true);
+    setSpeechResult(null);
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = mediaRecorder;
-      audioChunksRef.current = [];
-
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data);
-        }
-      };
-
-      mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
-        const audioUrl = URL.createObjectURL(audioBlob);
-        setRecordedAudioUrl(audioUrl);
-        
-        // Stop all tracks to release microphone
-        stream.getTracks().forEach(track => track.stop());
-      };
-
-      mediaRecorder.start();
-      setIsRecording(true);
-      setRecordedAudioUrl(null); // Clear previous recording if any
-    } catch (err) {
-      console.error("Error accessing microphone:", err);
-      alert("Izin mikrofon diperlukan untuk fitur ini.");
+      const transcript = await transcribeAudio(blob);
+      setSpeechResult({
+        correct: matchesSpeech(transcript, letter.aliases),
+        transcript,
+      });
+    } catch (error: unknown) {
+      console.error("Speech recognition failed:", error);
+      setSpeechResult({ correct: false, error: true });
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-    }
-  };
-
-  const toggleRecording = () => {
+  const toggleRecording = async () => {
+    if (isAnalyzing) return;
     if (isRecording) {
-      stopRecording();
-    } else {
-      startRecording();
+      stop();
+      return;
+    }
+
+    setSpeechResult(null);
+    try {
+      await start(handleBlob, 2_000);
+    } catch (error: unknown) {
+      console.error("Error accessing microphone:", error);
+      setSpeechResult({ correct: false, error: true });
     }
   };
 
@@ -190,8 +237,9 @@ export default function HijaiyahDetailPage() {
               {/* Play Guide Button */}
               <button 
                 onClick={toggleAudio}
+                disabled={!letter.audio}
                 title="Putar Contoh Audio"
-                className={`flex items-center justify-center w-24 h-24 rounded-full shadow-2xl transition-all duration-500 hover:scale-105 active:scale-95 outline-none focus:ring-4 focus:ring-[#1885A4]/40 ${
+                className={`flex items-center justify-center w-24 h-24 rounded-full shadow-2xl transition-all duration-500 hover:scale-105 active:scale-95 outline-none focus:ring-4 focus:ring-[#1885A4]/40 disabled:cursor-not-allowed disabled:opacity-40 ${
                   isPlaying 
                     ? 'bg-emerald-500 text-white shadow-emerald-500/40' 
                     : 'bg-[#1885A4] text-white shadow-[#1885A4]/40'
@@ -207,6 +255,7 @@ export default function HijaiyahDetailPage() {
               {/* Record Button */}
               <button 
                 onClick={toggleRecording}
+                disabled={isAnalyzing}
                 title={isRecording ? "Hentikan Rekaman" : "Rekam Suara Anda"}
                 className={`flex items-center justify-center w-24 h-24 rounded-full shadow-2xl transition-all duration-500 hover:scale-105 active:scale-95 outline-none focus:ring-4 focus:ring-red-400/40 ${
                   isRecording 
@@ -217,6 +266,8 @@ export default function HijaiyahDetailPage() {
                 {isRecording ? (
                   // Stop Icon
                   <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+                ) : isAnalyzing ? (
+                  <svg className="w-10 h-10 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/></svg>
                 ) : (
                   // Mic Icon
                   <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
@@ -238,16 +289,33 @@ export default function HijaiyahDetailPage() {
               </div>
             )}
 
-            {/* Sound Wave Visualizer (Mock - Shows when either playing guide, recording, or playing record) */}
+            {isAnalyzing && (
+              <p className="absolute -bottom-32 text-sm font-semibold text-[#1885A4]">
+                Menganalisis pengucapan...
+              </p>
+            )}
+
+            {speechResult && !isAnalyzing && (
+              <div className="absolute -bottom-40 text-center text-sm">
+                <p className={`font-bold ${speechResult.correct ? 'text-emerald-600' : 'text-red-500'}`}>
+                  {speechResult.correct ? '✅ Pengucapan benar!' : speechResult.error ? '❌ Gagal mengenali suara.' : '❌ Coba lagi ya!'}
+                </p>
+                {speechResult.transcript && (
+                  <p className="mt-1 text-gray-500">Terdengar: <span className="font-semibold">{speechResult.transcript}</span></p>
+                )}
+              </div>
+            )}
+
+            {/* Sound Wave Visualizer */}
             <div className={`absolute -bottom-40 flex items-center gap-1.5 transition-all duration-500 ${isPlaying || isRecording || isPlayingRecord ? 'opacity-100' : 'opacity-0'}`}>
-              {[...Array(12)].map((_, i) => (
+              {waveformHeights.map((height, i) => (
                 <div 
                   key={i} 
                   className={`w-1.5 rounded-full animate-bounce ${isRecording ? 'bg-red-400' : 'bg-emerald-400'}`}
                   style={{
-                    height: (isPlaying || isRecording || isPlayingRecord) ? `${Math.random() * 24 + 8}px` : '4px',
-                    animationDuration: `${Math.random() * 0.5 + 0.3}s`,
-                    animationDelay: `${Math.random() * 0.5}s`
+                    height: (isPlaying || isRecording || isPlayingRecord) ? `${height}px` : '4px',
+                    animationDuration: `${0.3 + (i % 4) * 0.1}s`,
+                    animationDelay: `${(i % 5) * 0.1}s`
                   }}
                 ></div>
               ))}

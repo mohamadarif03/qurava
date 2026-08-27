@@ -11,13 +11,17 @@ export default function HijaiyahDetailPage() {
 
   useEffect(() => {
     const mode = localStorage.getItem("accessibility_mode") || "reguler";
-    setAccMode(mode);
-    if (mode === "tunanetra") {
-      window.speechSynthesis.cancel();
-      const msg = new SpeechSynthesisUtterance("Anda berada di menu huruf Hijaiyah. Tekan tombol Tab untuk menyusuri daftar huruf. Tekan Enter untuk memilih.");
-      msg.lang = 'id-ID';
-      window.speechSynthesis.speak(msg);
-    }
+    const setupTimeout = window.setTimeout(() => {
+      setAccMode(mode);
+      if (mode === "tunanetra") {
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance("Anda berada di menu huruf Hijaiyah. Tekan tombol Tab untuk menyusuri daftar huruf. Tekan Enter untuk memilih.");
+        msg.lang = 'id-ID';
+        window.speechSynthesis.speak(msg);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(setupTimeout);
   }, []);
 
   const speakNav = (text: string) => {
@@ -121,7 +125,8 @@ export default function HijaiyahDetailPage() {
         <div className="flex-1 overflow-y-auto px-10 pt-8 pb-16 custom-scrollbar">
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-6">
             {hijaiyahLetters.map((letter, idx) => {
-              const isLocked = idx > 2; // Only Alif (0), Ba (1), Ta (2) are unlocked
+              // The migrated AI models support the complete Hijaiyah set.
+              const isLocked = false;
 
               const CardContent = (
                 <div 

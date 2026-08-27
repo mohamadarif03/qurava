@@ -4,11 +4,80 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
+import { classifyLandmarks, loadHandsignModel, type Landmark } from "@/services/handsign-service";
 
 const hijaiyahData: Record<string, { char: string, name: string }> = {
   "alif": { char: "ا", name: "Alif" },
   "baa": { char: "ب", name: "Ba" },
   "ta": { char: "ت", name: "Ta" },
+  "tsa": { char: "ث", name: "Tsa" },
+  "jim": { char: "ج", name: "Jim" },
+  "ha1": { char: "ح", name: "Ha" },
+  "kha": { char: "خ", name: "Kha" },
+  "dal": { char: "د", name: "Dal" },
+  "dzal": { char: "ذ", name: "Dzal" },
+  "ra": { char: "ر", name: "Ra" },
+  "zai": { char: "ز", name: "Zai" },
+  "sin": { char: "س", name: "Sin" },
+  "syin": { char: "ش", name: "Syin" },
+  "shad": { char: "ص", name: "Shad" },
+  "dhad": { char: "ض", name: "Dhad" },
+  "tha": { char: "ط", name: "Tha" },
+  "zha": { char: "ظ", name: "Zha" },
+  "ain": { char: "ع", name: "Ain" },
+  "ghain": { char: "غ", name: "Ghain" },
+  "fa": { char: "ف", name: "Fa" },
+  "qaf": { char: "ق", name: "Qaf" },
+  "kaf": { char: "ك", name: "Kaf" },
+  "lam": { char: "ل", name: "Lam" },
+  "mim": { char: "م", name: "Mim" },
+  "nun": { char: "ن", name: "Nun" },
+  "waw": { char: "و", name: "Waw" },
+  "ha2": { char: "ه", name: "Ha" },
+  "ya": { char: "ي", name: "Ya" },
+};
+
+type ScanState = "loading_model" | "tracking" | "success";
+
+type HandsResults = {
+  multiHandLandmarks?: Landmark[][];
+};
+
+type HandsApi = {
+  setOptions: (options: {
+    maxNumHands: number;
+    modelComplexity: number;
+    minDetectionConfidence: number;
+    minTrackingConfidence: number;
+  }) => void;
+  onResults: (callback: (results: HandsResults) => void) => void;
+  send: (input: { image: HTMLVideoElement }) => Promise<void>;
+  close: () => void;
+};
+
+type CameraApi = {
+  start: () => void | Promise<void>;
+  stop: () => void;
+};
+
+type MediaPipeWindow = Window & {
+  Hands?: new (options: { locateFile: (file: string) => string }) => HandsApi;
+  Camera?: new (
+    video: HTMLVideoElement,
+    options: { onFrame: () => Promise<void>; width: number; height: number },
+  ) => CameraApi;
+  drawConnectors?: (
+    context: CanvasRenderingContext2D,
+    landmarks: Landmark[],
+    connections: unknown,
+    style: { color: string; lineWidth: number },
+  ) => void;
+  drawLandmarks?: (
+    context: CanvasRenderingContext2D,
+    landmarks: Landmark[],
+    style: { color: string; lineWidth: number; radius: number },
+  ) => void;
+  HAND_CONNECTIONS?: unknown;
 };
 
 export default function GestureRecognitionPage() {
@@ -18,14 +87,17 @@ export default function GestureRecognitionPage() {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [cameraError, setCameraError] = useState<string | null>(null)  // States for AI Processing
-  type ScanState = "loading_model" | "tracking" | "success";
+  const [cameraError, setCameraError] = useState<string | null>(null);
   const [scanState, setScanState] = useState<ScanState>("loading_model");
   const scanStateRef = useRef<ScanState>("loading_model");
+  const [detectedLabel, setDetectedLabel] = useState<string | null>(null);
+  const [confidence, setConfidence] = useState<number | null>(null);
+  const lastClassificationRef = useRef(0);
+  const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mountedRef = useRef(true);
 
-  // MediaPipe Refs
-  const handsRef = useRef<any>(null);
-  const cameraRef = useRef<any>(null);
+  const handsRef = useRef<HandsApi | null>(null);
+  const cameraRef = useRef<CameraApi | null>(null);
   
   // Custom hook pattern to keep ref in sync
   useEffect(() => {
@@ -35,6 +107,7 @@ export default function GestureRecognitionPage() {
   const initMediaPipe = useCallback(async () => {
     try {
       setScanState("loading_model");
+      setCameraError(null);
       
       const loadScript = (src: string) => {
         return new Promise<void>((resolve, reject) => {
@@ -55,17 +128,23 @@ export default function GestureRecognitionPage() {
       await loadScript("https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js");
       await loadScript("https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js");
       await loadScript("https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js");
+      if (!mountedRef.current) return;
 
-      const win = window as any;
+      const win = window as unknown as MediaPipeWindow;
       const Hands = win.Hands;
       const Camera = win.Camera;
       const drawConnectors = win.drawConnectors;
       const drawLandmarks = win.drawLandmarks;
       const HAND_CONNECTIONS = win.HAND_CONNECTIONS;
 
-      if (!Hands || !Camera) {
+      if (!Hands || !Camera || !drawConnectors || !drawLandmarks || !HAND_CONNECTIONS) {
         throw new Error("Library MediaPipe gagal diinisialisasi dari CDN");
       }
+
+      // Load the trained classifier before opening the camera so the loading
+      // state represents both MediaPipe and the ONNX model.
+      await loadHandsignModel();
+      if (!mountedRef.current) return;
 
       const hands = new Hands({
         locateFile: (file: string) => {
@@ -75,31 +154,48 @@ export default function GestureRecognitionPage() {
 
       hands.setOptions({
         maxNumHands: 1,
-        modelComplexity: 1,
+        // The ONNX model was trained from MediaPipe's lightweight landmarks.
+        modelComplexity: 0,
         minDetectionConfidence: 0.7,
         minTrackingConfidence: 0.7
       });
 
-      hands.onResults((results: any) => {
+      hands.onResults((results: HandsResults) => {
         if (!canvasRef.current || !videoRef.current) return;
         const canvasCtx = canvasRef.current.getContext('2d');
         if (!canvasCtx) return;
 
-        canvasCtx.save();
-        canvasCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        
         if (canvasRef.current.width !== videoRef.current.videoWidth && videoRef.current.videoWidth > 0) {
           canvasRef.current.width = videoRef.current.videoWidth;
           canvasRef.current.height = videoRef.current.videoHeight;
         }
 
-        // Draw Hands and Check Gesture ALWAYS
+        canvasCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+
         if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
           for (const landmarks of results.multiHandLandmarks) {
-            
-            // Lakukan pengecekan gestur secara real-time kapanpun ada tangan
-            if (scanStateRef.current === "tracking") {
-              checkGesture(id, landmarks);
+            const now = Date.now();
+            if (
+              scanStateRef.current === "tracking" &&
+              now - lastClassificationRef.current >= 750
+            ) {
+              lastClassificationRef.current = now;
+              void classifyLandmarks(landmarks, id).then((result) => {
+                if (!result || !mountedRef.current) return;
+
+                setDetectedLabel(result.label);
+                setConfidence(result.confidence);
+
+                if (result.correct) {
+                  setScanState("success");
+                  if (successTimeoutRef.current) clearTimeout(successTimeoutRef.current);
+                  successTimeoutRef.current = setTimeout(() => {
+                    if (mountedRef.current) setScanState("tracking");
+                  }, 2_000);
+                }
+              }).catch((error: unknown) => {
+                console.error("Hand-sign classification failed:", error);
+              });
             }
 
             drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS,
@@ -107,7 +203,6 @@ export default function GestureRecognitionPage() {
             drawLandmarks(canvasCtx, landmarks, {color: '#10B981', lineWidth: 2, radius: 4});
           }
         }
-        canvasCtx.restore();
       });
 
       handsRef.current = hands;
@@ -122,7 +217,10 @@ export default function GestureRecognitionPage() {
           width: 640,
           height: 480
         });
-        camera.start();
+        Promise.resolve(camera.start()).catch((error: unknown) => {
+          console.error(error);
+          if (mountedRef.current) setCameraError("Izin kamera ditolak atau tidak tersedia.");
+        });
         cameraRef.current = camera;
       }
       
@@ -135,42 +233,19 @@ export default function GestureRecognitionPage() {
   }, [id]);
 
   useEffect(() => {
-    initMediaPipe();
+    mountedRef.current = true;
+    const initTimeout = window.setTimeout(() => {
+      void initMediaPipe();
+    }, 0);
 
     return () => {
+      mountedRef.current = false;
+      window.clearTimeout(initTimeout);
+      if (successTimeoutRef.current) clearTimeout(successTimeoutRef.current);
       if (cameraRef.current) cameraRef.current.stop();
       if (handsRef.current) handsRef.current.close();
     };
   }, [initMediaPipe]);
-
-  // Gesture Recognition Logic
-  const checkGesture = (letterId: string, landmarks: any[]) => {
-    // Toleransi agar pendeteksian tidak terlalu kaku
-    const indexUp = landmarks[8].y < landmarks[6].y && landmarks[6].y < landmarks[5].y;
-    const middleUp = landmarks[12].y < landmarks[10].y;
-    const ringUp = landmarks[16].y < landmarks[14].y;
-    
-    // Jari yang mengepal ujungnya harus berada di bawah pangkal ruas ke-2 (PIP)
-    const middleFolded = landmarks[12].y > landmarks[10].y;
-    const ringFolded = landmarks[16].y > landmarks[14].y;
-    const pinkyFolded = landmarks[20].y > landmarks[18].y;
-
-    let isMatch = false;
-
-    if (letterId === "alif") {
-      isMatch = indexUp && middleFolded && ringFolded && pinkyFolded;
-    } else if (letterId === "baa") {
-      isMatch = indexUp && middleUp && ringFolded && pinkyFolded;
-    } else if (letterId === "ta") {
-      isMatch = indexUp && middleUp && ringUp && pinkyFolded;
-    }
-
-    if (isMatch) {
-      setScanState("success");
-      // Kunci state di 'success' selama 2 detik sebelum mereset agar user bisa melihat feedback-nya
-      setTimeout(() => setScanState("tracking"), 2000); 
-    }
-  };
 
   if (!letter) {
     return (
@@ -188,7 +263,7 @@ export default function GestureRecognitionPage() {
     if (id === "alif") return "Tegakkan jari telunjuk ke atas (angka 1), kepalkan jari lainnya.";
     if (id === "baa") return "Tegakkan jari telunjuk dan tengah (angka 2 / Peace), kepalkan jari lainnya.";
     if (id === "ta") return "Tegakkan jari telunjuk, tengah, dan manis (angka 3), kepalkan jari kelingking.";
-    return "Posisikan tangan Anda dengan benar.";
+    return `Tunjukkan gestur huruf ${letter.name} di depan kamera. Model AI akan mencocokkan bentuk tanganmu secara otomatis.`;
   };
 
   return (
@@ -317,20 +392,27 @@ export default function GestureRecognitionPage() {
               </h4>
               
               <div className="bg-white rounded-2xl aspect-[4/3] mb-4 flex items-center justify-center p-2 border border-white shadow-sm relative overflow-hidden z-10 text-center">
-                {id === "alif" ? (
-                  <img src="/handsign/alif.jpeg" alt="Panduan Alif" className="w-full h-full object-contain rounded-xl" />
-                ) : id === "baa" ? (
-                  <img src="/handsign/baa.png" alt="Panduan Baa" className="w-full h-full object-contain rounded-xl" />
-                ) : (
-                  <span className="text-5xl font-bold text-[#1885A4]">
-                    {id === "ta" && "🤟"}
-                  </span>
-                )}
+                <span className="font-arabic text-8xl font-bold text-[#1885A4]" aria-label={`Contoh huruf ${letter.name}`}>
+                  {letter.char}
+                </span>
               </div>
 
               <p className="text-sm text-gray-600 leading-relaxed relative z-10">
                 Untuk huruf <strong>{letter.name}</strong>, posisikan tangan Anda di depan layar. {getInstruction()} Klik tombol di bawah kamera, dan AI akan mencocokkannya secara otomatis!
               </p>
+
+              <div className="mt-4 rounded-2xl bg-white/80 border border-white px-4 py-3 relative z-10">
+                <div className="flex items-center justify-between gap-3 text-xs">
+                  <span className="font-bold text-gray-500">Hasil deteksi</span>
+                  <span className={`font-black ${scanState === "success" || detectedLabel === id || (id === "baa" && detectedLabel === "ba") ? "text-emerald-600" : "text-[#1885A4]"}`}>
+                    {detectedLabel ? detectedLabel.toUpperCase() : "—"}
+                  </span>
+                </div>
+                <div className="mt-1 flex items-center justify-between gap-3 text-xs text-gray-500">
+                  <span>Keyakinan model</span>
+                  <span className="font-bold">{confidence === null ? "—" : `${(confidence * 100).toFixed(0)}%`}</span>
+                </div>
+              </div>
             </div>
 
           </div>

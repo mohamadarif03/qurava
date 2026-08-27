@@ -1,18 +1,54 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useRecorder } from "@/hooks/use-recorder";
+import { transcribeAudio } from "@/services/audio-service";
+
+type Verse = {
+  id: number;
+  arabic: string;
+  latin: string;
+  translation: string;
+};
+
+type SpeechResult = {
+  correct: boolean;
+  transcript?: string;
+  error?: boolean;
+};
+
+const normalizeRecitation = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[ً-ٟؐ-ؚٰ]/g, "")
+    .replace(/[^\p{L}\p{N}\u0600-\u06ff]/gu, "");
+
+const matchesVerse = (transcript: string, verse: Verse) => {
+  const cleanTranscript = normalizeRecitation(transcript);
+  if (!cleanTranscript) return false;
+
+  return [verse.arabic, verse.latin].some((expected) => {
+    const cleanExpected = normalizeRecitation(expected);
+    return cleanTranscript.includes(cleanExpected) || cleanExpected.includes(cleanTranscript);
+  });
+};
 
 export default function AyatDetailPage() {
   const params = useParams();
   const id = params?.id;
   
   const [playingId, setPlayingId] = useState<number | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { isRecording, start, stop } = useRecorder();
+  const [recordingVerseId, setRecordingVerseId] = useState<number | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [speechResult, setSpeechResult] = useState<SpeechResult | null>(null);
 
   // Data statis khusus Al-Fatihah
-  const surahData = {
+  const surahData: { nameLatin: string; nameArabic: string; translation: string; ayahCount: number; verses: Verse[] } = {
     nameLatin: "Al-Fatihah",
     nameArabic: "الفاتحة",
     translation: "Pembukaan",
@@ -63,12 +99,65 @@ export default function AyatDetailPage() {
     ]
   };
 
-  const handlePlayAudio = (verseId: number) => {
-    // Simulasi play audio
-    setPlayingId(verseId);
-    setTimeout(() => {
+  const handlePlayAudio = async (verseId: number) => {
+    if (playingId === verseId) {
+      audioRef.current?.pause();
+      audioRef.current = null;
       setPlayingId(null);
-    }, 4000); // Stop setelah 4 detik
+      return;
+    }
+
+    audioRef.current?.pause();
+    setPlayingId(verseId);
+
+    try {
+      const response = await fetch(`https://api.alquran.cloud/v1/ayah/1:${verseId}/ar.alafasy`);
+      const result = await response.json() as { code?: number; data?: { audio?: string } };
+      if (result.code !== 200 || !result.data?.audio) throw new Error("Audio ayat tidak tersedia");
+
+      const audio = new Audio(result.data.audio);
+      audioRef.current = audio;
+      audio.onended = () => setPlayingId(null);
+      audio.onerror = () => setPlayingId(null);
+      await audio.play();
+    } catch (error: unknown) {
+      console.error("Failed to play verse audio:", error);
+      setPlayingId(null);
+    }
+  };
+
+  const handleBlob = async (blob: Blob, verse: Verse) => {
+    setIsAnalyzing(true);
+    setSpeechResult(null);
+
+    try {
+      const transcript = await transcribeAudio(blob);
+      setSpeechResult({ correct: matchesVerse(transcript, verse), transcript });
+    } catch (error: unknown) {
+      console.error("Verse speech recognition failed:", error);
+      setSpeechResult({ correct: false, error: true });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const toggleListening = async (verse: Verse) => {
+    if (isAnalyzing) return;
+    if (isRecording) {
+      stop();
+      return;
+    }
+
+    setRecordingVerseId(verse.id);
+    setSpeechResult(null);
+    try {
+      // Al-Fatihah verses need more time than the short-letter exercise.
+      await start((blob) => handleBlob(blob, verse), 10_000);
+    } catch (error: unknown) {
+      console.error("Error accessing microphone:", error);
+      setSpeechResult({ correct: false, error: true });
+      setRecordingVerseId(null);
+    }
   };
 
   // Jika ID bukan 1, tampilkan error ringan
@@ -182,6 +271,35 @@ export default function AyatDetailPage() {
                       <p className="text-gray-600 text-sm leading-relaxed">
                         {verse.translation}
                       </p>
+
+                      <div className="mt-4 flex flex-wrap items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => toggleListening(verse)}
+                          disabled={isAnalyzing || (isRecording && recordingVerseId !== verse.id)}
+                          className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                            isRecording && recordingVerseId === verse.id
+                              ? "bg-red-500 text-white"
+                              : "bg-[#1885A4]/10 text-[#1885A4] hover:bg-[#1885A4]/20"
+                          }`}
+                        >
+                          <span className="text-base">{isRecording && recordingVerseId === verse.id ? "■" : "🎤"}</span>
+                          {isRecording && recordingVerseId === verse.id ? "Berhenti merekam" : "Latihan suara"}
+                        </button>
+
+                        {recordingVerseId === verse.id && isAnalyzing && (
+                          <span className="text-xs font-semibold text-[#1885A4]">Menganalisis...</span>
+                        )}
+
+                        {recordingVerseId === verse.id && speechResult && !isAnalyzing && (
+                          <span className={`text-xs font-bold ${speechResult.correct ? "text-emerald-600" : "text-red-500"}`}>
+                            {speechResult.correct ? "✅ Bacaan benar" : speechResult.error ? "❌ Gagal mengenali suara" : "❌ Coba lagi"}
+                          </span>
+                        )}
+                      </div>
+                      {recordingVerseId === verse.id && speechResult?.transcript && (
+                        <p className="text-xs italic text-gray-500">Terdengar: “{speechResult.transcript}”</p>
+                      )}
                     </div>
                   </div>
                 </div>
