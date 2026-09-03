@@ -27,9 +27,9 @@ export default function Sidebar({ activePath = "/" }: SidebarProps) {
       <div>
         {/* Logo */}
         <div className="flex items-center gap-3 mb-10 px-2">
-          <img src="/logo.png" alt="SAHABAT Logo" className="h-10 object-contain drop-shadow-sm" />
+          <img src="/logo.png" alt="QURAVA Logo" className="h-10 object-contain drop-shadow-sm" />
           <div className="leading-tight">
-            <h1 className="font-black text-lg text-gray-800 tracking-wider uppercase leading-none">SAHABAT</h1>
+            <h1 className="font-black text-lg text-gray-800 tracking-wider uppercase leading-none">QURAVA</h1>
             <span className="text-[9px] text-gray-400 uppercase tracking-[0.2em] font-semibold">Al-Qur&apos;an Learning</span>
           </div>
         </div>

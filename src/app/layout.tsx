@@ -21,7 +21,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Sahabat Al-Qur'an - Mulai Perjalananmu Bersama Al-Qur'an",
+  title: "QURAVA - Mulai Perjalananmu Bersama Al-Qur'an",
   description: "Temukan pengalaman membaca dan mempelajari Al-Qur'an yang lebih nyaman, terarah, dan bermakna.",
 };
 

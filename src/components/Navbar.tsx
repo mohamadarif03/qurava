@@ -46,11 +46,11 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <img 
             src="/logo.png" 
-            alt="SAHABAT Logo" 
+            alt="QURAVA Logo" 
             className="h-12 md:h-16 object-contain drop-shadow-sm transition-transform hover:scale-105"
           />
           <span className="font-sans font-bold text-xl md:text-2xl tracking-widest text-[#FFFDF8] drop-shadow-sm uppercase">
-            SAHABAT
+            QURAVA
           </span>
         </div>
         

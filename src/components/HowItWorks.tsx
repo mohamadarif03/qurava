@@ -7,7 +7,7 @@ export default function HowItWorks() {
     {
       id: "01",
       title: "Pilih Profil Akses",
-      desc: "Setiap individu memiliki kebutuhan yang unik. SAHABAT menyediakan profil khusus seperti mode visual tinggi (Tunanetra) hingga antarmuka ramah disleksia.",
+      desc: "Setiap individu memiliki kebutuhan yang unik. QURAVA menyediakan profil khusus seperti mode visual tinggi (Tunanetra) hingga antarmuka ramah disleksia.",
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
@@ -87,7 +87,7 @@ export default function HowItWorks() {
               Belajar dalam Tiga Langkah
             </h2>
             <p className="text-gray-500 font-sans leading-relaxed text-[15px] mb-8">
-              SAHABAT menghilangkan kompleksitas teknis. Anda hanya perlu memilih preferensi, dan AI kami akan menyusun pengalaman belajar yang paling intuitif untuk Anda.
+              QURAVA menghilangkan kompleksitas teknis. Anda hanya perlu memilih preferensi, dan AI kami akan menyusun pengalaman belajar yang paling intuitif untuk Anda.
             </p>
             
             <a href="#mulai" className="inline-flex items-center gap-3 text-[#1885A4] font-bold text-sm hover:gap-4 transition-all">

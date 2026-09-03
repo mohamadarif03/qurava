@@ -65,7 +65,7 @@ export default function Testimonials() {
           Pengalaman Mereka
         </h2>
         <p className="text-gray-500 font-sans text-lg max-w-2xl mx-auto">
-          Lihat bagaimana SAHABAT membantu berbagai individu mencapai tujuan spiritual mereka tanpa batasan.
+          Lihat bagaimana QURAVA membantu berbagai individu mencapai tujuan spiritual mereka tanpa batasan.
         </p>
       </div>
 

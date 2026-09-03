@@ -1,6 +1,6 @@
 # Product Requirements Document (PRD)
 
-# SAHABAT
+# QURAVA
 ### Platform Pembelajaran Al-Qur'an Berbasis AI dan Accessibility First
 
 ---
@@ -9,7 +9,7 @@
 
 ## Deskripsi
 
-SAHABAT merupakan platform pembelajaran Al-Qur'an berbasis web yang dirancang dengan pendekatan **Accessibility First**, sehingga setiap pengguna dapat belajar Al-Qur'an melalui jalur interaksi yang sesuai dengan kemampuan mereka.
+QURAVA merupakan platform pembelajaran Al-Qur'an berbasis web yang dirancang dengan pendekatan **Accessibility First**, sehingga setiap pengguna dapat belajar Al-Qur'an melalui jalur interaksi yang sesuai dengan kemampuan mereka.
 
 Platform menyediakan tiga metode interaksi berbasis AI:
 

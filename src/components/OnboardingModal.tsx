@@ -24,7 +24,7 @@ export default function OnboardingModal() {
       if (typeof window !== "undefined" && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
         
-        const textToSpeak = "Selamat datang di Sahabat. Bantu aku mengenalmu! Pilih kondisimu agar aku bisa menyesuaikan tampilan dan fitur aplikasi ini menjadi yang terbaik untukmu. Gunakan tombol Tab di keyboard untuk bernavigasi dan Enter untuk memilih.";
+        const textToSpeak = "Selamat datang di QURAVA. Bantu aku mengenalmu! Pilih kondisimu agar aku bisa menyesuaikan tampilan dan fitur aplikasi ini menjadi yang terbaik untukmu. Gunakan tombol Tab di keyboard untuk bernavigasi dan Enter untuk memilih.";
         const utterance = new SpeechSynthesisUtterance(textToSpeak);
         utterance.lang = "id-ID";
         utterance.rate = 0.95; // Slightly slower for clarity

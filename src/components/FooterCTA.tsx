@@ -38,11 +38,11 @@ export default function FooterCTA() {
             <div className="flex items-center gap-4 mb-6">
               <img 
                 src="/logo.png" 
-                alt="SAHABAT Logo" 
+                alt="QURAVA Logo" 
                 className="h-16 md:h-20 object-contain"
               />
               <span className="text-[#1885A4] font-sans font-black text-2xl md:text-3xl tracking-widest uppercase">
-                SAHABAT
+                QURAVA
               </span>
             </div>
             <p className="text-gray-500 text-sm leading-relaxed mb-6 font-sans">
