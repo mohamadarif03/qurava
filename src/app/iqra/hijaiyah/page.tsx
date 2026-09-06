@@ -79,7 +79,7 @@ export default function HijaiyahDetailPage() {
   ];
 
   return (
-    <div className="flex h-screen w-full bg-[#FAF8F1] overflow-hidden font-sans relative">
+    <div className="flex h-dvh min-h-0 w-full bg-[#FAF8F1] overflow-hidden font-sans relative">
       
       {/* ═══════════════ BACKGROUND EFFECTS ═══════════════ */}
       {/* Massive subtle watermark */}
@@ -95,10 +95,10 @@ export default function HijaiyahDetailPage() {
       <Sidebar activePath="/iqra" />
 
       {/* ═══════════════ MAIN CONTENT ═══════════════ */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden relative z-10">
+      <main className="min-w-0 flex-1 flex flex-col h-full overflow-hidden relative z-10 pb-20 lg:pb-0">
         
         {/* Header */}
-        <header className="px-10 pt-10 pb-8 flex flex-col gap-4 shrink-0 border-b border-gray-200/40 bg-white/30 backdrop-blur-md">
+        <header className="px-5 pt-6 pb-4 flex flex-col gap-3 shrink-0 border-b border-gray-200/40 bg-white/30 backdrop-blur-md md:px-10 md:pt-10 md:pb-8">
           <Link 
             href="/iqra" 
             onFocus={() => speakNav("Tombol Kembali ke Modul Utama Iqra")}
@@ -112,7 +112,7 @@ export default function HijaiyahDetailPage() {
           </Link>
 
           <div>
-            <h2 className="text-4xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-[#1885A4] to-emerald-600">
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-[#1885A4] to-emerald-600">
               Huruf Hijaiyah
             </h2>
             <p className="text-gray-500 text-sm max-w-xl leading-relaxed mt-2">
@@ -122,15 +122,14 @@ export default function HijaiyahDetailPage() {
         </header>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto px-10 pt-8 pb-16 custom-scrollbar">
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-6">
+        <div className="flex-1 overflow-y-auto px-4 pt-6 pb-20 custom-scrollbar">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3 md:gap-4 lg:gap-6">
             {hijaiyahLetters.map((letter, idx) => {
               // The migrated AI models support the complete Hijaiyah set.
               const isLocked = false;
 
-              const CardContent = (
-                <div 
-                  className={`relative backdrop-blur-xl rounded-3xl p-6 border shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col items-center justify-center gap-4 aspect-[4/5] transition-all duration-500 overflow-hidden h-full ${
+              const CardContent = (                  <div
+                  className={`relative backdrop-blur-xl rounded-2xl md:rounded-3xl p-3 md:p-6 border shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col items-center justify-center gap-3 aspect-[4/5] transition-all duration-500 overflow-hidden h-full ${
                     isLocked 
                       ? 'bg-gray-100/50 border-gray-200 opacity-60 grayscale cursor-not-allowed' 
                       : 'bg-white/70 group border-white/60 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(24,133,164,0.15)] hover:border-[#1885A4]/30 hover:bg-white cursor-pointer'
@@ -161,17 +160,17 @@ export default function HijaiyahDetailPage() {
                   )}
 
                   {/* Arabic Letter */}
-                  <span className={`font-arabic font-bold text-6xl drop-shadow-sm transition-all duration-500 relative z-10 ${
+                  <span className={`font-arabic font-bold text-4xl md:text-6xl drop-shadow-sm transition-all duration-500 relative z-10 ${
                     isLocked ? 'text-gray-400' : 'text-gray-700 group-hover:text-[#1885A4] group-hover:scale-110 group-hover:-translate-y-1'
                   }`}>
                     {letter.char}
                   </span>
 
                   {/* Latin Name Container */}
-                  <div className={`w-full text-center relative z-10 mt-auto pt-4 border-t transition-colors duration-300 ${
+                  <div className={`w-full text-center relative z-10 mt-auto pt-3 md:pt-4 border-t transition-colors duration-300 ${
                     isLocked ? 'border-gray-200' : 'border-gray-100/50 group-hover:border-[#1885A4]/20'
                   }`}>
-                    <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-colors duration-300 ${
+                    <span className={`text-[9px] md:text-[11px] font-black uppercase tracking-[0.2em] transition-colors duration-300 ${
                       isLocked ? 'text-gray-400' : 'text-gray-400 group-hover:text-[#1885A4]'
                     }`}>
                       {letter.name}

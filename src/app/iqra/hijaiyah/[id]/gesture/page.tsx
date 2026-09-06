@@ -249,7 +249,7 @@ export default function GestureRecognitionPage() {
 
   if (!letter) {
     return (
-      <div className="flex h-screen w-full bg-[#FAF8F1] items-center justify-center font-sans">
+      <div className="flex h-dvh min-h-0 w-full bg-[#FAF8F1] items-center justify-center px-4 font-sans text-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-700 mb-4">Huruf tidak ditemukan.</h1>
           <Link href="/iqra/hijaiyah" className="text-[#1885A4] hover:underline font-medium">Kembali ke Daftar Huruf</Link>
@@ -267,31 +267,31 @@ export default function GestureRecognitionPage() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-[#FAF8F1] overflow-hidden font-sans relative">
+    <div className="flex h-dvh min-h-0 w-full bg-[#FAF8F1] overflow-hidden font-sans relative">
       
       {/* ═══════════════ SIDEBAR ═══════════════ */}
       <Sidebar activePath="/iqra" />
 
       {/* ═══════════════ MAIN CONTENT ═══════════════ */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden relative z-10">
+      <main className="min-w-0 flex-1 flex flex-col h-full overflow-hidden relative z-10 pb-20 lg:pb-0">
         
         {/* Header */}
-        <header className="px-8 pt-8 pb-4 flex items-center justify-between z-10 shrink-0">
+        <header className="px-4 pt-4 pb-3 sm:px-6 md:px-8 md:pt-8 md:pb-4 flex items-center justify-between gap-3 z-10 shrink-0">
           <Link href={`/iqra/hijaiyah/${id}`} className="inline-flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-[#1885A4] transition-colors w-fit group">
             <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 group-hover:text-[#1885A4] group-hover:border-[#1885A4] transition-colors shadow-sm">
               <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7"/></svg>
             </div>
-            Kembali ke Audio AI
+            <span className="hidden sm:inline">Kembali ke Audio AI</span>
           </Link>
 
-          <div className="flex items-center gap-3 bg-white px-5 py-2 rounded-full shadow-sm border border-gray-100">
+          <div className="flex items-center gap-2 bg-white px-3 sm:px-5 py-2 rounded-full shadow-sm border border-gray-100">
             <svg className="w-5 h-5 text-[#1885A4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-            <span className="text-sm font-bold text-gray-700">MediaPipe AI (Tunarungu)</span>
+            <span className="text-xs sm:text-sm font-bold text-gray-700"><span className="hidden sm:inline">MediaPipe AI </span>(Tunarungu)</span>
           </div>
         </header>
 
         {/* Content Area */}
-        <div className="flex-1 flex flex-col md:flex-row p-8 gap-8 overflow-y-auto">
+        <div className="flex-1 flex flex-col xl:flex-row p-4 sm:p-6 md:p-8 gap-5 md:gap-8 overflow-y-auto">
           
           {/* LEFT: Camera View */}
           <div className="flex-1 flex flex-col items-center justify-center relative">
@@ -336,7 +336,7 @@ export default function GestureRecognitionPage() {
                 <>
                   {/* Bounding Box Guide */}
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-                    <div className={`w-64 h-80 border-4 border-dashed rounded-3xl transition-colors duration-500 relative ${
+                    <div className={`w-[45%] min-w-36 max-w-64 h-[70%] min-h-44 max-h-80 border-2 sm:border-4 border-dashed rounded-2xl sm:rounded-3xl transition-colors duration-500 relative ${
                       scanState === "loading_model" ? "border-amber-400 animate-pulse" :
                       scanState === "tracking" ? "border-[#1885A4] bg-[#1885A4]/5" : 
                       "border-emerald-500 shadow-[0_0_50px_rgba(16,185,129,0.5)] bg-emerald-500/20 backdrop-blur-sm"
@@ -354,8 +354,8 @@ export default function GestureRecognitionPage() {
                   </div>
 
                   {/* Top Status Badge */}
-                  <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20">
-                    <div className={`backdrop-blur-md text-white px-6 py-3 rounded-full text-sm font-mono font-bold tracking-widest uppercase flex items-center gap-3 shadow-xl transition-colors duration-300 ${
+                  <div className="absolute top-3 sm:top-6 left-1/2 -translate-x-1/2 z-20">
+                    <div className={`whitespace-nowrap backdrop-blur-md text-white px-3 py-2 sm:px-6 sm:py-3 rounded-full text-[9px] sm:text-sm font-mono font-bold tracking-wider sm:tracking-widest uppercase flex items-center gap-2 sm:gap-3 shadow-xl transition-colors duration-300 ${
                       scanState === "success" ? "bg-emerald-500 scale-110" : "bg-black/60"
                     }`}>
                       {scanState === "loading_model" && <><span className="w-3 h-3 rounded-full bg-amber-400 animate-spin"></span> MEMUAT AI...</>}
@@ -369,7 +369,7 @@ export default function GestureRecognitionPage() {
           </div>
 
           {/* RIGHT: Guide & References */}
-          <div className="w-full md:w-96 flex flex-col gap-6">
+          <div className="w-full xl:w-96 xl:shrink-0 grid grid-cols-1 md:grid-cols-2 xl:flex xl:flex-col gap-5 md:gap-6">
             
             {/* Target Letter Card */}
             <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm flex flex-col items-center text-center">

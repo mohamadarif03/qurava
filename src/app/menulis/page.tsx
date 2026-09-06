@@ -189,16 +189,16 @@ export default function MenulisPage() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-[#FAF8F1] overflow-hidden font-sans">
+    <div className="flex h-dvh min-h-0 w-full bg-[#FAF8F1] overflow-hidden font-sans">
       
       {/* ═══════════════ SIDEBAR ═══════════════ */}
       <Sidebar activePath="/menulis" />
 
       {/* ═══════════════ MAIN CONTENT ═══════════════ */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden relative">
+      <main className="min-w-0 flex-1 flex flex-col h-full overflow-hidden relative pb-20 lg:pb-0">
 
         {/* Decorative Islamic geometric pattern (bottom-right) */}
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] opacity-[0.04] pointer-events-none z-0">
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] opacity-[0.04] pointer-events-none z-0 md:block hidden">
           <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g stroke="#1885A4" strokeWidth="1.5">
               <circle cx="400" cy="400" r="50" />
@@ -221,14 +221,14 @@ export default function MenulisPage() {
         </div>
 
         {/* Header */}
-        <header className="px-8 pt-8 pb-4 flex justify-between items-end z-10 shrink-0">
+        <header className="px-5 pt-6 pb-4 flex flex-col gap-2 md:flex-row md:justify-between md:items-end z-10 shrink-0">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-2 md:gap-3">
               Menulis Hijaiyah <span className="text-2xl">✍️</span>
             </h2>
             <p className="text-gray-500 mt-1 text-sm">Latih tanganmu menulis huruf-huruf Arab dengan benar</p>
           </div>
-          <div className="text-[13px] font-medium text-gray-400 flex items-center gap-2">
+          <div className="text-[11px] md:text-[13px] font-medium text-gray-400 flex items-center gap-1 md:gap-2 flex-wrap">
             <span className="hover:text-gray-700 cursor-pointer transition-colors">Beranda</span>
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/></svg>
             <span className="hover:text-gray-700 cursor-pointer transition-colors">Iqra&apos;</span>
@@ -240,20 +240,20 @@ export default function MenulisPage() {
         </header>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto px-8 pb-8 z-10">
-          <div className="flex gap-6 h-full min-h-[580px]">
+        <div className="flex-1 overflow-y-auto px-4 pb-8 md:px-6 z-10">
+          <div className="flex flex-col xl:flex-row gap-4 min-h-full md:gap-6">
             
             {/* ═══════ BOOK (Left Page + Right Page) ═══════ */}
-            <div className="flex-1 flex rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.08)] overflow-hidden relative bg-white">
+            <div className="min-w-0 flex-1 flex flex-col lg:flex-row rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.08)] overflow-hidden relative bg-white">
               
               {/* ── LEFT PAGE: Daftar Huruf ── */}
-              <div className="w-[280px] shrink-0 bg-white flex flex-col border-r-0 relative">
-                {/* Subtle page edge shadow */}
-                <div className="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-r from-gray-200 to-gray-300 z-20"></div>
+              <div className="w-full h-[210px] sm:h-[240px] lg:h-auto lg:w-[240px] 2xl:w-[280px] shrink-0 bg-white flex flex-col border-r-0 relative">
+                {/* Subtle page edge shadow - hidden on mobile */}
+                <div className="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-r from-gray-200 to-gray-300 z-20 lg:block hidden"></div>
                 
-                <div className="p-5 flex-1 flex flex-col overflow-hidden">
-                  <h3 className="font-bold text-gray-800 mb-3 text-[15px]">Daftar Huruf Hijaiyah</h3>
-                  <div className="grid grid-cols-4 gap-1.5 overflow-y-auto pr-1 custom-scrollbar flex-1">
+                <div className="p-4 md:p-5 flex-1 flex flex-col overflow-hidden">
+                  <h3 className="font-bold text-gray-800 mb-3 text-[13px] md:text-[15px]">Daftar Huruf Hijaiyah</h3>
+                  <div className="grid grid-cols-5 sm:grid-cols-7 lg:grid-cols-4 gap-1 overflow-y-auto pr-1 custom-scrollbar flex-1">
                     {hijaiyah.map((item) => {
                       const isLocked = false;
                       
@@ -277,8 +277,8 @@ export default function MenulisPage() {
                               </svg>
                             </div>
                           )}
-                          <span className="text-lg leading-none font-bold mb-0.5">{item.char}</span>
-                          <span className={`text-[9px] ${
+                          <span className="text-base md:text-lg leading-none font-bold mb-0.5">{item.char}</span>
+                          <span className={`text-[8px] md:text-[9px] ${
                             isLocked ? 'text-gray-300' : activeLetter === item.id ? 'text-blue-100' : 'text-gray-400'
                           }`}>{item.name}</span>
                         </button>
@@ -287,9 +287,9 @@ export default function MenulisPage() {
                   </div>
                 </div>
 
-                {/* Latihan Kata Dasar */}
-                <div className="p-5 border-t border-gray-100">
-                  <h3 className="font-bold text-gray-800 mb-3 text-[15px]">Latihan Kata Dasar</h3>
+                {/* Latihan Kata Dasar - hidden on mobile, shown on md+ */}
+                <div className="p-4 md:p-5 border-t border-gray-100 lg:block hidden">
+                  <h3 className="font-bold text-gray-800 mb-3 text-[13px] md:text-[15px]">Latihan Kata Dasar</h3>
                   <div className="flex gap-3">
                     {kataDasar.map((char, i) => (
                       <div key={i} className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-lg font-bold text-gray-700 border border-gray-100 cursor-pointer hover:bg-[#1885A4]/10 hover:text-[#1885A4] hover:border-[#1885A4]/30 transition-all">
@@ -301,7 +301,7 @@ export default function MenulisPage() {
               </div>
 
               {/* ── BOOK SPINE ── */}
-              <div className="w-[20px] shrink-0 relative z-30">
+              <div className="hidden lg:block w-[20px] shrink-0 relative z-30">
                 <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200"></div>
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-300/30 to-transparent"></div>
                 {/* Spine center line */}
@@ -309,13 +309,13 @@ export default function MenulisPage() {
               </div>
 
               {/* ── RIGHT PAGE: Writing Canvas ── */}
-              <div className="flex-1 flex flex-col relative bg-[#FFFCF6]">
+              <div className="min-w-0 flex-1 flex flex-col relative bg-[#FFFCF6] min-h-[420px] sm:min-h-[500px] lg:min-h-[580px]">
                 
                 {/* Canvas Header / Toolbar */}
-                <div className="px-6 py-4 flex items-center justify-between border-b border-gray-100 bg-white relative z-30">
-                  <h3 className="font-bold text-[15px] text-gray-800">Latihan Menulis Berangkai</h3>
+                <div className="px-4 md:px-6 py-3 flex flex-col gap-2 md:flex-row md:items-center md:justify-between border-b border-gray-100 bg-white relative z-30">
+                  <h3 className="font-bold text-[13px] md:text-[15px] text-gray-800">Latihan Menulis Berangkai</h3>
                   
-                  <div className="flex items-center gap-4 bg-gray-50/80 px-3 py-1.5 rounded-xl border border-gray-100">
+                  <div className="flex max-w-full flex-wrap items-center gap-2 sm:gap-3 bg-gray-50/80 px-2 md:px-3 py-1.5 rounded-xl border border-gray-100">
                     {/* Colors */}
                     <div className="flex gap-1.5">
                       <button onClick={() => setBrushColor("#111827")} className={`w-5 h-5 rounded-full bg-gray-900 border-2 shadow-sm transition-transform hover:scale-110 ${brushColor === "#111827" ? 'ring-2 ring-[#1885A4] border-white' : 'border-transparent'}`}></button>
@@ -332,7 +332,7 @@ export default function MenulisPage() {
                         type="range" min="10" max="60" 
                         value={brushSize} 
                         onChange={(e) => setBrushSize(parseInt(e.target.value))}
-                        className="w-14 accent-[#1885A4] h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer" 
+                        className="w-10 md:w-14 accent-[#1885A4] h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                       />
                     </div>
                     <div className="w-px h-5 bg-gray-200"></div>
@@ -353,12 +353,12 @@ export default function MenulisPage() {
                        backgroundPosition: '0 20px'
                      }}>
                   
-                  {/* Left margin red line (like a real notebook) */}
-                  <div className="absolute left-12 top-0 bottom-0 w-[1px] bg-red-200/40 z-10 pointer-events-none"></div>
+                  {/* Left margin red line (like a real notebook) - hidden on mobile */}
+                  <div className="absolute left-8 md:left-12 top-0 bottom-0 w-[1px] bg-red-200/40 z-10 pointer-events-none"></div>
 
                   {/* Large Letter Trace Guideline (Background) */}
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-                    <span className="text-[340px] font-arabic text-gray-300/30 font-bold leading-none select-none">
+                      <span className="text-[min(70vw,340px)] font-arabic text-gray-300/30 font-bold leading-none select-none">
                       {activeDef?.char || "ا"}
                     </span>
                   </div>
@@ -378,7 +378,7 @@ export default function MenulisPage() {
                   />
 
                   {/* Check Action Button */}
-                  <div className="absolute bottom-6 left-6 right-6 z-30 flex justify-end">
+                  <div className="absolute bottom-4 left-4 right-4 z-30 flex justify-end">
                     <button 
                       onClick={evaluateDrawing}
                       disabled={isEvaluating}
@@ -456,7 +456,7 @@ export default function MenulisPage() {
                 </div>
 
                 {/* Pagination Dots */}
-                <div className="flex justify-center items-center gap-2 py-3 bg-white border-t border-gray-100 z-30">
+                <div className="flex justify-center items-center gap-2 py-2 md:py-3 bg-white border-t border-gray-100 z-30">
                   <div className="w-2 h-2 rounded-full bg-[#1885A4]"></div>
                   <div className="w-2 h-2 rounded-full bg-gray-300"></div>
                   <div className="w-2 h-2 rounded-full bg-gray-300"></div>
@@ -470,7 +470,7 @@ export default function MenulisPage() {
             </div>
 
             {/* ═══════ RIGHT SIDEBAR: Tips & Detail ═══════ */}
-            <div className="w-[260px] shrink-0 flex flex-col gap-5">
+            <div className="w-full xl:w-[260px] shrink-0 grid grid-cols-1 md:grid-cols-2 xl:flex xl:flex-col gap-5">
               
               {/* Tips Card */}
               <div className="bg-white rounded-2xl p-5 shadow-[0_4px_20px_rgba(0,0,0,0.04)] relative overflow-hidden flex-1 border border-gray-100">

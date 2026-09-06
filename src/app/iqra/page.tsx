@@ -81,12 +81,12 @@ export default function IqraPage() {
   ];
 
   return (
-    <div className="flex h-screen w-full bg-[#FAF8F1] overflow-hidden font-sans">
+    <div className="flex h-dvh min-h-0 w-full bg-[#FAF8F1] overflow-hidden font-sans">
       {/* ═══════════════ SIDEBAR ═══════════════ */}
       <Sidebar activePath="/iqra" />
 
       {/* ═══════════════ MAIN CONTENT ═══════════════ */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden relative">
+      <main className="min-w-0 flex-1 flex flex-col h-full overflow-hidden relative pb-20 lg:pb-0">
         {/* Decorative Background Pattern */}
         <div className="absolute top-0 right-0 w-96 h-96 opacity-[0.03] pointer-events-none">
           <svg viewBox="0 0 100 100" fill="currentColor">
@@ -95,8 +95,8 @@ export default function IqraPage() {
         </div>
 
         {/* Header */}
-        <header className="px-8 pt-10 pb-6 flex flex-col gap-2 z-10 shrink-0">
-          <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
+        <header className="px-5 pt-6 pb-5 md:px-8 md:pt-10 md:pb-6 flex flex-col gap-2 z-10 shrink-0">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
             Materi Pembelajaran Iqra'
           </h2>
           <p className="text-gray-500 text-sm max-w-xl leading-relaxed">
@@ -105,12 +105,11 @@ export default function IqraPage() {
         </header>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto px-8 pb-12 custom-scrollbar z-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="flex-1 overflow-y-auto px-5 pb-20 md:px-8 md:pb-12 custom-scrollbar z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {learningModules.map((module, idx) => {
-              const CardContent = (
-                <div 
-                  className={`relative bg-white rounded-3xl p-6 border transition-all duration-300 h-full flex flex-col
+              const CardContent = (                  <div
+                  className={`relative bg-white rounded-3xl p-4 md:p-6 border transition-all duration-300 h-full flex flex-col
                     ${module.status === 'locked' 
                       ? 'border-gray-200 shadow-sm opacity-75 grayscale-[30%] cursor-not-allowed' 
                       : 'border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-lg hover:-translate-y-1 cursor-pointer group'}
@@ -136,17 +135,17 @@ export default function IqraPage() {
                   </div>
 
                   {/* Module Icon (Typography based) */}
-                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 ${module.status === 'locked' ? 'bg-gray-50 text-gray-400' : `${module.bgLight} ${module.textColor}`}`}>
-                    <span className="font-arabic font-bold text-2xl tracking-widest">{module.iconText}</span>
+                  <div className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center mb-4 md:mb-6 ${module.status === 'locked' ? 'bg-gray-50 text-gray-400' : `${module.bgLight} ${module.textColor}`}`}>
+                    <span className="font-arabic font-bold text-xl md:text-2xl tracking-widest">{module.iconText}</span>
                   </div>
 
                   {/* Module Info */}
                   <div className="mb-6">
                     <span className="text-[10px] font-bold tracking-wider uppercase text-gray-400 mb-1 block">Modul {idx + 1}</span>
-                    <h3 className={`text-lg font-bold mb-2 ${module.status === 'locked' ? 'text-gray-500' : 'text-gray-900 group-hover:text-[#1885A4] transition-colors'}`}>
+                    <h3 className={`text-base md:text-lg font-bold mb-1.5 md:mb-2 ${module.status === 'locked' ? 'text-gray-500' : 'text-gray-900 group-hover:text-[#1885A4] transition-colors'}`}>
                       {module.title}
                     </h3>
-                    <p className="text-sm text-gray-500 leading-relaxed min-h-[40px]">
+                    <p className="text-xs md:text-sm text-gray-500 leading-relaxed min-h-[40px]">
                       {module.description}
                     </p>
                   </div>
@@ -155,7 +154,7 @@ export default function IqraPage() {
                   <div className="mt-auto">
                     {module.status !== 'locked' ? (
                       <div>
-                        <div className="flex justify-between text-[11px] font-bold text-gray-400 mb-2 uppercase tracking-wide">
+                        <div className="flex justify-between text-[10px] md:text-[11px] font-bold text-gray-400 mb-1.5 uppercase tracking-wide">
                           <span>Progress</span>
                           <span className={module.textColor}>{module.progress}%</span>
                         </div>
@@ -165,7 +164,7 @@ export default function IqraPage() {
                       </div>
                     ) : (
                       <div className="w-full py-2 bg-gray-50 border border-gray-100 rounded-xl text-center">
-                        <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wide">Selesaikan modul sebelumnya</span>
+                        <span className="text-[10px] md:text-[11px] font-bold text-gray-400 uppercase tracking-wide">Selesaikan modul sebelumnya</span>
                       </div>
                     )}
                   </div>

@@ -167,7 +167,7 @@ export default function HijaiyahDetailPage() {
 
   if (!letter) {
     return (
-      <div className="flex h-screen w-full bg-[#FAF8F1] items-center justify-center font-sans">
+      <div className="flex h-dvh min-h-0 w-full bg-[#FAF8F1] items-center justify-center px-4 font-sans text-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-700 mb-4">Huruf tidak ditemukan atau terkunci.</h1>
           <Link href="/iqra/hijaiyah" className="text-[#1885A4] hover:underline font-medium">Kembali ke Daftar Huruf</Link>
@@ -177,7 +177,7 @@ export default function HijaiyahDetailPage() {
   }
 
   return (
-    <div className="flex h-screen w-full bg-[#FAF8F1] overflow-hidden font-sans relative">
+    <div className="flex h-dvh min-h-0 w-full bg-[#FAF8F1] overflow-hidden font-sans relative">
       
       {/* ═══════════════ BACKGROUND EFFECTS ═══════════════ */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none overflow-hidden opacity-[0.03] mix-blend-multiply flex items-center justify-center">
@@ -191,10 +191,10 @@ export default function HijaiyahDetailPage() {
       <Sidebar activePath="/iqra" />
 
       {/* ═══════════════ MAIN CONTENT ═══════════════ */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden relative z-10">
+      <main className="min-w-0 flex-1 flex flex-col h-full overflow-hidden relative z-10 pb-20 lg:pb-0">
         
         {/* Header */}
-        <header className="px-10 pt-10 pb-4 flex flex-col gap-4 shrink-0 bg-transparent">
+        <header className="px-4 pt-6 pb-3 flex flex-col gap-3 shrink-0 bg-transparent md:px-10 md:pt-10 md:pb-4">
           <Link href="/iqra/hijaiyah" className="inline-flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-[#1885A4] transition-colors w-fit group">
             <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
@@ -204,12 +204,12 @@ export default function HijaiyahDetailPage() {
         </header>
 
         {/* Content Area */}
-        <div className="flex-1 flex flex-col items-center justify-center pb-20">
+        <div className="flex-1 min-h-0 overflow-y-auto flex flex-col items-center justify-center px-4 pb-24 sm:px-6 md:pb-28">
           
-          <div className="relative group flex flex-col items-center">
+          <div className="relative group flex w-full max-w-[400px] flex-col items-center">
             
             {/* The giant letter card */}
-            <div className={`relative bg-white/80 backdrop-blur-xl rounded-[3rem] p-16 border ${isRecording ? 'border-red-400/50 shadow-[0_20px_60px_rgba(248,113,113,0.15)]' : 'border-white/60 shadow-[0_20px_60px_rgba(24,133,164,0.08)]'} transition-all duration-500 flex flex-col items-center justify-center aspect-square min-w-[320px] md:min-w-[400px]`}>
+            <div className={`relative w-full bg-white/80 backdrop-blur-xl rounded-[2rem] md:rounded-[3rem] p-6 sm:p-8 md:p-16 border ${isRecording ? 'border-red-400/50 shadow-[0_20px_60px_rgba(248,113,113,0.15)]' : 'border-white/60 shadow-[0_20px_60px_rgba(24,133,164,0.08)]'} transition-all duration-500 flex flex-col items-center justify-center aspect-square`}>
               
               {/* Animated aura when playing audio */}
               <div className={`absolute inset-0 bg-[#1885A4]/10 rounded-[3rem] blur-3xl transition-opacity duration-700 pointer-events-none ${isPlaying ? 'opacity-100 scale-110 animate-pulse' : 'opacity-0 scale-100'}`}></div>
@@ -217,29 +217,29 @@ export default function HijaiyahDetailPage() {
               {/* Animated aura when recording */}
               <div className={`absolute inset-0 bg-red-400/10 rounded-[3rem] blur-3xl transition-opacity duration-700 pointer-events-none ${isRecording ? 'opacity-100 scale-110 animate-pulse' : 'opacity-0 scale-100'}`}></div>
 
-              <span className={`font-arabic font-bold text-[180px] md:text-[220px] leading-none drop-shadow-sm mb-4 relative z-10 transition-colors duration-300 ${isRecording ? 'text-red-500' : 'text-gray-800'}`}>
+              <span className={`font-arabic font-bold text-[min(45vw,180px)] leading-none drop-shadow-sm mb-3 md:mb-4 relative z-10 transition-colors duration-300 ${isRecording ? 'text-red-500' : 'text-gray-800'}`}>
                 {letter.char}
               </span>
               
-              <div className="mt-2 text-center relative z-10">
-                <span className={`text-xl font-black uppercase tracking-[0.3em] transition-colors duration-300 ${isRecording ? 'text-red-500' : 'text-[#1885A4]'}`}>
+              <div className="mt-2 md:mt-4 text-center relative z-10">
+                <span className={`text-lg md:text-xl font-black uppercase tracking-[0.3em] transition-colors duration-300 ${isRecording ? 'text-red-500' : 'text-[#1885A4]'}`}>
                   {letter.name}
                 </span>
-                <p className="text-sm text-gray-400 mt-2 font-medium tracking-wide">
+                <p className="text-xs md:text-sm text-gray-400 mt-1 md:mt-2 font-medium tracking-wide">
                   {isRecording ? "Sedang Merekam..." : "Pelafalan Dasar"}
                 </p>
               </div>
             </div>
 
             {/* ACTION BUTTONS (Positioned below the card) */}
-            <div className="absolute -bottom-10 flex items-center gap-6">
+            <div className="absolute -bottom-8 flex items-center gap-4 sm:-bottom-10 sm:gap-6">
               
               {/* Play Guide Button */}
               <button 
                 onClick={toggleAudio}
                 disabled={!letter.audio}
                 title="Putar Contoh Audio"
-                className={`flex items-center justify-center w-24 h-24 rounded-full shadow-2xl transition-all duration-500 hover:scale-105 active:scale-95 outline-none focus:ring-4 focus:ring-[#1885A4]/40 disabled:cursor-not-allowed disabled:opacity-40 ${
+                className={`flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full shadow-2xl transition-all duration-500 hover:scale-105 active:scale-95 outline-none focus:ring-4 focus:ring-[#1885A4]/40 disabled:cursor-not-allowed disabled:opacity-40 ${
                   isPlaying 
                     ? 'bg-emerald-500 text-white shadow-emerald-500/40' 
                     : 'bg-[#1885A4] text-white shadow-[#1885A4]/40'
@@ -257,7 +257,7 @@ export default function HijaiyahDetailPage() {
                 onClick={toggleRecording}
                 disabled={isAnalyzing}
                 title={isRecording ? "Hentikan Rekaman" : "Rekam Suara Anda"}
-                className={`flex items-center justify-center w-24 h-24 rounded-full shadow-2xl transition-all duration-500 hover:scale-105 active:scale-95 outline-none focus:ring-4 focus:ring-red-400/40 ${
+                className={`flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full shadow-2xl transition-all duration-500 hover:scale-105 active:scale-95 outline-none focus:ring-4 focus:ring-red-400/40 ${
                   isRecording 
                     ? 'bg-red-500 text-white shadow-red-500/40 animate-pulse' 
                     : 'bg-white text-red-500 border-2 border-red-100 hover:bg-red-50 shadow-black/5'

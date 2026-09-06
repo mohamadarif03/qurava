@@ -8,12 +8,27 @@
 
 html {
   font-size: 80%;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background-color: #FAF8F1;
   color: #1F4D3D;
   overflow-x: hidden;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 1023px) {
+  body {
+    overscroll-behavior-y: none;
+  }
 }
 
 /* Custom premium scrollbar */
@@ -34,4 +49,10 @@ body {
 /* Custom premium focal glows */
 .glow-accent {
   box-shadow: 0 0 40px 10px rgba(156, 199, 181, 0.15);
+}
+
+@layer utilities {
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }

@@ -63,12 +63,12 @@ export default function AyatPendekPage() {
   ];
 
   return (
-    <div className="flex h-screen w-full bg-[#FAF8F1] overflow-hidden font-sans">
+    <div className="flex h-dvh min-h-0 w-full bg-[#FAF8F1] overflow-hidden font-sans">
       {/* ═══════════════ SIDEBAR ═══════════════ */}
       <Sidebar activePath="/ayat" />
 
       {/* ═══════════════ MAIN CONTENT ═══════════════ */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden relative">
+      <main className="min-w-0 flex-1 flex flex-col h-full overflow-hidden relative pb-20 lg:pb-0">
         {/* Decorative Background Pattern */}
         <div className="absolute top-0 right-0 w-96 h-96 opacity-[0.03] pointer-events-none">
           <svg viewBox="0 0 100 100" fill="currentColor">
@@ -77,9 +77,9 @@ export default function AyatPendekPage() {
         </div>
 
         {/* Header */}
-        <header className="px-8 pt-10 pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 z-10 shrink-0">
+        <header className="px-5 pt-6 pb-5 md:px-8 md:pt-10 md:pb-6 flex flex-col gap-4 md:flex-row md:justify-between md:items-end z-10 shrink-0">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900 tracking-tight mb-2">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight mb-2">
               Daftar Surah Pendek
             </h2>
             <p className="text-gray-500 text-sm max-w-xl leading-relaxed">
@@ -101,8 +101,8 @@ export default function AyatPendekPage() {
         </header>
 
         {/* Content Area (List View) */}
-        <div className="flex-1 overflow-y-auto px-8 pb-12 custom-scrollbar z-10">
-          <div className="flex flex-col gap-4 w-full">
+        <div className="flex-1 overflow-y-auto px-5 pb-20 md:px-8 md:pb-12 custom-scrollbar z-10">
+          <div className="flex flex-col gap-3 md:gap-4 w-full">
             {surahList.map((surah, idx) => {
               const isLocked = idx > 0; // Lock everything except the first one (Al-Fatihah)
               
@@ -110,7 +110,7 @@ export default function AyatPendekPage() {
               <Link 
                 href={isLocked ? "#" : `/ayat/${surah.id}`}
                 key={idx} 
-                className={`rounded-3xl p-5 md:p-6 border flex flex-col md:flex-row items-center gap-6 relative overflow-hidden transition-all duration-300 ${
+                className={`rounded-2xl md:rounded-3xl p-4 md:p-5 md:p-6 border flex flex-col md:flex-row items-center gap-4 md:gap-6 relative overflow-hidden transition-all duration-300 ${
                   isLocked 
                     ? 'bg-gray-50/50 border-gray-100 opacity-60 cursor-not-allowed grayscale block' 
                     : 'bg-white border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-lg hover:-translate-y-1 group cursor-pointer block'
@@ -118,7 +118,7 @@ export default function AyatPendekPage() {
               >
                 {/* Lock Overlay Icon */}
                 {isLocked && (
-                  <div className="absolute top-4 right-4 md:top-6 md:right-6 text-gray-400">
+                  <div className="absolute top-3 right-3 md:top-4 md:right-4 md:top-6 md:right-6 text-gray-400">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                     </svg>
@@ -126,7 +126,7 @@ export default function AyatPendekPage() {
                 )}
 
                 {/* Surah Number (Decorative) */}
-                <div className="relative w-14 h-14 flex items-center justify-center shrink-0">
+                <div className="relative w-10 h-10 md:w-14 md:h-14 flex items-center justify-center shrink-0">
                   <svg className={`absolute inset-0 w-full h-full transition-colors ${isLocked ? 'text-gray-200' : 'text-gray-100 group-hover:text-[#1885A4]/10'}`} fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2L14.4 7.6L20.5 8.2L15.9 12.3L17.2 18.2L12 15.2L6.8 18.2L8.1 12.3L3.5 8.2L9.6 7.6L12 2Z" />
                   </svg>
@@ -135,16 +135,16 @@ export default function AyatPendekPage() {
 
                 {/* Surah Details */}
                 <div className="flex-1 text-center md:text-left w-full">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between mb-2 gap-2">
-                    <h3 className={`text-xl font-bold transition-colors ${isLocked ? 'text-gray-500' : 'text-gray-900 group-hover:text-[#1885A4]'}`}>
+                  <div className="flex flex-col md:flex-row md:items-center justify-between mb-1 md:mb-2 gap-1 md:gap-2">
+                    <h3 className={`text-lg md:text-xl font-bold transition-colors ${isLocked ? 'text-gray-500' : 'text-gray-900 group-hover:text-[#1885A4]'}`}>
                       {surah.nameLatin}
                     </h3>
-                    <span className="font-arabic font-bold text-2xl text-gray-800">
+                    <span className="font-arabic font-bold text-xl md:text-2xl text-gray-800">
                       {surah.nameArabic}
                     </span>
                   </div>
                   
-                  <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-sm text-gray-500 font-medium">
+                  <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4 text-xs md:text-sm text-gray-500 font-medium">
                     <span className="uppercase tracking-wider text-xs">{surah.translation}</span>
                     <span className="hidden md:inline text-gray-300">•</span>
                     <span>{surah.ayahCount} Ayat</span>
@@ -152,10 +152,10 @@ export default function AyatPendekPage() {
                 </div>
 
                 {/* Progress & Actions */}
-                <div className="w-full md:w-auto flex items-center justify-between md:justify-end gap-6 md:pl-6 md:border-l border-gray-100">
+                <div className="w-full md:w-auto flex items-center justify-between md:justify-end gap-4 md:gap-6 md:pl-4 md:border-l border-gray-100">
                   {/* Progress Ring */}
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 relative flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 md:w-12 md:h-12 relative flex items-center justify-center shrink-0">
                       <svg className="w-full h-full absolute inset-0 -rotate-90" viewBox="0 0 36 36">
                         <path className="text-gray-100" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                         <path 
@@ -174,8 +174,7 @@ export default function AyatPendekPage() {
                     </div>
                   </div>
 
-                  {/* Play / Learn Button */}
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-sm shrink-0 transition-all ${
+                  {/* Play / Learn Button */}                    <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center shadow-sm shrink-0 transition-all ${
                     isLocked 
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                       : surah.progress === 100 

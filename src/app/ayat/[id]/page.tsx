@@ -163,9 +163,9 @@ export default function AyatDetailPage() {
   // Jika ID bukan 1, tampilkan error ringan
   if (id !== "1") {
     return (
-      <div className="flex h-screen w-full bg-[#FAF8F1] overflow-hidden font-sans">
+      <div className="flex h-dvh min-h-0 w-full bg-[#FAF8F1] overflow-hidden font-sans">
         <Sidebar activePath="/ayat" />
-        <main className="flex-1 flex items-center justify-center flex-col">
+        <main className="min-w-0 flex-1 flex items-center justify-center flex-col px-4 pb-20 text-center lg:pb-0">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Surat Belum Tersedia</h2>
           <Link href="/ayat" className="px-6 py-2 bg-[#1885A4] text-white rounded-full hover:bg-[#146e87]">
             Kembali ke Daftar Surat
@@ -176,13 +176,13 @@ export default function AyatDetailPage() {
   }
 
   return (
-    <div className="flex h-screen w-full bg-[#FAF8F1] overflow-hidden font-sans">
+    <div className="flex h-dvh min-h-0 w-full bg-[#FAF8F1] overflow-hidden font-sans">
       
       {/* ═══════════════ SIDEBAR ═══════════════ */}
       <Sidebar activePath="/ayat" />
 
       {/* ═══════════════ MAIN CONTENT ═══════════════ */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden relative">
+      <main className="min-w-0 flex-1 flex flex-col h-full overflow-hidden relative pb-20 lg:pb-0">
         
         {/* Decorative pattern */}
         <div className="absolute top-0 right-0 w-96 h-96 opacity-[0.03] pointer-events-none">
@@ -192,15 +192,15 @@ export default function AyatDetailPage() {
         </div>
 
         {/* Header */}
-        <header className="px-8 pt-8 pb-4 flex flex-col z-10 shrink-0 bg-white/60 backdrop-blur-md border-b border-gray-100">
-          <div className="flex items-center gap-4 mb-4">
+        <header className="px-4 pt-5 pb-3 sm:px-6 md:px-8 md:pt-8 md:pb-4 flex flex-col z-10 shrink-0 bg-white/60 backdrop-blur-md border-b border-gray-100">
+          <div className="flex min-w-0 items-start gap-3 sm:items-center sm:gap-4 mb-3 sm:mb-4">
             <Link href="/ayat" className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#1885A4] hover:border-[#1885A4] transition-colors shadow-sm">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7"/></svg>
             </Link>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+            <div className="min-w-0">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 flex flex-wrap items-center gap-2 sm:gap-3">
                 {surahData.nameLatin} 
-                <span className="text-[#1885A4] font-arabic font-normal text-3xl mt-1">({surahData.nameArabic})</span>
+                <span className="text-[#1885A4] font-arabic font-normal text-2xl sm:text-3xl mt-1">({surahData.nameArabic})</span>
               </h2>
               <div className="flex items-center gap-3 text-sm text-gray-500 mt-1 font-medium">
                 <span className="uppercase tracking-widest text-[11px]">{surahData.translation}</span>
@@ -212,12 +212,12 @@ export default function AyatDetailPage() {
         </header>
 
         {/* Verses List */}
-        <div className="flex-1 overflow-y-auto px-8 pb-12 pt-6 custom-scrollbar z-10">
+        <div className="flex-1 overflow-y-auto px-4 pb-8 pt-4 sm:px-6 md:px-8 md:pb-12 md:pt-6 custom-scrollbar z-10">
           <div className="flex flex-col gap-6 max-w-4xl mx-auto">
             {surahData.verses.map((verse) => (
               <div 
                 key={verse.id} 
-                className={`bg-white rounded-3xl p-6 md:p-8 border shadow-sm transition-all duration-300 ${
+                className={`bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border shadow-sm transition-all duration-300 ${
                   playingId === verse.id 
                     ? 'border-[#1885A4] shadow-[0_10px_30px_rgba(24,133,164,0.1)] ring-4 ring-[#1885A4]/10' 
                     : 'border-gray-100 hover:border-gray-200 hover:shadow-md'

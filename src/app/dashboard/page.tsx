@@ -33,22 +33,21 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="flex h-screen w-full bg-[#FAF8F1] overflow-hidden font-sans">
+    <div className="flex h-dvh min-h-0 w-full bg-[#FAF8F1] overflow-hidden font-sans">
       
       {/* ═══════════════ SIDEBAR ═══════════════ */}
       <Sidebar activePath="/dashboard" />
 
       {/* ═══════════════ MAIN CONTENT ═══════════════ */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden relative">
+      <main className="min-w-0 flex-1 flex flex-col h-full overflow-hidden relative pb-20 lg:pb-0">
         {/* Decorative Background Pattern */}
-        <div className="absolute top-0 right-0 w-96 h-96 opacity-[0.03] pointer-events-none">
+        <div className="absolute top-0 right-0 w-96 h-96 opacity-[0.03] pointer-events-none md:hidden">
           <svg viewBox="0 0 100 100" fill="currentColor"><path d="M50 0L57 30L85 15L70 43L100 50L70 57L85 85L57 70L50 100L43 70L15 85L30 57L0 50L30 43L15 15L43 30Z" /></svg>
         </div>
 
         {/* Header */}
-        <header className="px-8 pt-10 pb-6 flex justify-between items-end z-10 shrink-0">
-          <div>
-            <h2 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+        <header className="px-4 pt-5 pb-4 sm:px-5 md:px-8 md:pt-8 md:pb-6 flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-end z-10 shrink-0">
+          <div>              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-3">
               Ahlan wa sahlan, {studentData.name}
             </h2>
             <p className="text-gray-500 mt-2 text-sm">Semoga harimu penuh berkah. Mari lanjutkan belajarmu hari ini!</p>
@@ -60,20 +59,20 @@ export default function DashboardPage() {
         </header>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto px-8 pb-10 custom-scrollbar z-10">
+          <div className="flex-1 overflow-y-auto px-4 pb-6 sm:px-5 md:px-8 md:pb-10 custom-scrollbar z-10">
           
           {/* Top Overview Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
             
             {/* Streak Card */}
             <div className="bg-white rounded-3xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 flex items-center gap-5">
-              <div className="w-14 h-14 rounded-full bg-orange-50 flex items-center justify-center text-orange-500 shrink-0 border border-orange-100">
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-orange-50 flex items-center justify-center text-orange-500 shrink-0 border border-orange-100">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" /></svg>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500 mb-1">Learning Streak</p>
                 <div className="flex items-end gap-2">
-                  <h3 className="text-2xl font-black text-gray-800 leading-none">{studentData.streak}</h3>
+                  <h3 className="text-xl md:text-2xl font-black text-gray-800 leading-none">{studentData.streak}</h3>
                   <span className="text-sm font-bold text-orange-500 mb-0.5">Hari Beruntun!</span>
                 </div>
               </div>
@@ -81,7 +80,7 @@ export default function DashboardPage() {
 
             {/* Daily Target Card */}
             <div className="bg-white rounded-3xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 flex items-center gap-5">
-              <div className="w-14 h-14 rounded-full bg-[#1885A4]/10 flex items-center justify-center text-[#1885A4] shrink-0 border border-[#1885A4]/20 relative">
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#1885A4]/10 flex items-center justify-center text-[#1885A4] shrink-0 border border-[#1885A4]/20 relative">
                  {/* Mini circular progress */}
                  <svg className="w-full h-full absolute inset-0 -rotate-90" viewBox="0 0 36 36">
                   <path className="text-gray-100" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
@@ -92,7 +91,7 @@ export default function DashboardPage() {
               <div>
                 <p className="text-sm font-medium text-gray-500 mb-1">Target Harian</p>
                 <div className="flex items-end gap-2">
-                  <h3 className="text-2xl font-black text-gray-800 leading-none">20</h3>
+                  <h3 className="text-xl md:text-2xl font-black text-gray-800 leading-none">20</h3>
                   <span className="text-sm font-bold text-gray-400 mb-0.5">/ 25 Menit</span>
                 </div>
               </div>
@@ -100,13 +99,13 @@ export default function DashboardPage() {
 
             {/* Score Card */}
             <div className="bg-white rounded-3xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 flex items-center gap-5">
-              <div className="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0 border border-emerald-100">
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0 border border-emerald-100">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500 mb-1">Nilai Latihan</p>
                 <div className="flex items-end gap-2">
-                  <h3 className="text-2xl font-black text-gray-800 leading-none">{studentData.averageScore}</h3>
+                  <h3 className="text-xl md:text-2xl font-black text-gray-800 leading-none">{studentData.averageScore}</h3>
                   <span className="text-sm font-bold text-emerald-500 mb-0.5">Rata-rata</span>
                 </div>
               </div>
@@ -114,13 +113,13 @@ export default function DashboardPage() {
             
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
             {/* Left Column (Wider) */}
             <div className="lg:col-span-2 flex flex-col gap-8">
               
               {/* Progress Belajar (Overall) */}
-              <div className="bg-[#1885A4] rounded-[2rem] p-8 shadow-lg text-white relative overflow-hidden flex flex-col justify-between min-h-[220px]">
+            <div className="bg-[#1885A4] rounded-3xl md:rounded-[2rem] p-5 sm:p-6 md:p-8 shadow-lg text-white relative overflow-hidden flex flex-col justify-between min-h-[200px] md:min-h-[220px]">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4"></div>
                 
@@ -148,14 +147,14 @@ export default function DashboardPage() {
               {/* Modul Terakhir */}
               <div>
                 <div className="flex justify-between items-center mb-5">
-                  <h3 className="font-bold text-lg text-gray-800">Modul Terakhir</h3>
+                  <h3 className="font-bold text-base md:text-lg text-gray-800">Modul Terakhir</h3>
                   <button className="text-sm font-semibold text-[#1885A4] hover:underline">Lihat Semua</button>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {recentModules.map((mod, idx) => (
-                    <div key={idx} className="bg-white rounded-3xl p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 hover:shadow-md transition-shadow cursor-pointer group">
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className={`w-12 h-12 rounded-2xl ${mod.bgLight} ${mod.text} flex items-center justify-center shrink-0`}>
+                    <div key={idx} className="bg-white rounded-3xl p-4 md:p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 hover:shadow-md transition-shadow cursor-pointer group">
+                      <div className="flex items-center gap-3 md:gap-4 mb-3 md:mb-4">
+                        <div className={`w-10 h-10 md:w-12 md:h-12 rounded-2xl ${mod.bgLight} ${mod.text} flex items-center justify-center shrink-0`}>
                           {mod.type === 'writing' ? (
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                           ) : (
@@ -163,7 +162,7 @@ export default function DashboardPage() {
                           )}
                         </div>
                         <div>
-                          <h4 className="font-bold text-gray-900 group-hover:text-[#1885A4] transition-colors">{mod.title}</h4>
+                          <h4 className="font-bold text-sm md:text-gray-900 group-hover:text-[#1885A4] transition-colors">{mod.title}</h4>
                           <p className="text-xs text-gray-500 mt-0.5">{mod.subtitle}</p>
                         </div>
                       </div>
@@ -190,8 +189,8 @@ export default function DashboardPage() {
               
               {/* Hafalan Terakhir */}
               <div className="bg-white rounded-3xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
-                <h3 className="font-bold text-lg text-gray-800 mb-5">Hafalan Terakhir</h3>
-                <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-5 text-white relative overflow-hidden group cursor-pointer">
+                <h3 className="font-bold text-base md:text-lg text-gray-800 mb-4 md:mb-5">Hafalan Terakhir</h3>
+                <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-4 md:p-5 text-white relative overflow-hidden group cursor-pointer">
                   {/* Decor */}
                   <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/5 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
                   
@@ -200,7 +199,7 @@ export default function DashboardPage() {
                     <span className="text-xs font-semibold text-emerald-400 tracking-wider uppercase">{recentSurah.status}</span>
                   </div>
                   
-                  <h4 className="text-2xl font-black mb-1 relative z-10">{recentSurah.name}</h4>
+                  <h4 className="text-xl md:text-2xl font-black mb-1 relative z-10">{recentSurah.name}</h4>
                   <p className="text-gray-400 text-sm mb-4 relative z-10">Ayat {recentSurah.ayah}</p>
                   
                   <div className="flex items-center justify-between border-t border-white/10 pt-4 relative z-10">
@@ -218,18 +217,18 @@ export default function DashboardPage() {
               {/* Achievements */}
               <div className="bg-white rounded-3xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 flex-1">
                 <div className="flex justify-between items-center mb-5">
-                  <h3 className="font-bold text-lg text-gray-800">Pencapaian</h3>
+                  <h3 className="font-bold text-base md:text-lg text-gray-800">Pencapaian</h3>
                   <button className="text-sm font-semibold text-[#1885A4] hover:underline">Semua</button>
                 </div>
                 
                 <div className="flex flex-col gap-4">
                   {achievements.map((ach, idx) => (
-                    <div key={idx} className={`flex items-center gap-4 p-3 rounded-2xl border ${ach.active ? 'border-gray-100 bg-gray-50/50' : 'border-dashed border-gray-200 opacity-60'}`}>
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0 ${ach.active ? ach.color : 'bg-gray-100 grayscale'}`}>
+                    <div key={idx} className={`flex items-center gap-3 md:gap-4 p-2.5 md:p-3 rounded-2xl border ${ach.active ? 'border-gray-100 bg-gray-50/50' : 'border-dashed border-gray-200 opacity-60'}`}>
+                      <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center text-lg md:text-xl shrink-0 ${ach.active ? ach.color : 'bg-gray-100 grayscale'}`}>
                         {ach.icon}
                       </div>
                       <div>
-                        <h5 className="font-bold text-gray-800 text-sm">{ach.title}</h5>
+                        <h5 className="font-bold text-gray-800 text-xs md:text-sm">{ach.title}</h5>
                         <p className="text-[11px] text-gray-500 mt-0.5">{ach.active ? 'Tercapai' : 'Terkunci'}</p>
                       </div>
                       {ach.active && (
