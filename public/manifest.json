@@ -1,0 +1,35 @@
+{
+  "name": "QURAVA - Belajar Al-Qur'an",
+  "short_name": "QURAVA",
+  "description": "Temukan pengalaman membaca dan mempelajari Al-Qur'an yang lebih nyaman, terarah, dan bermakna.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF8F1",
+  "theme_color": "#1F4D3D",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "id",
+  "categories": ["education", "lifestyle"],
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/popup.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
+}
