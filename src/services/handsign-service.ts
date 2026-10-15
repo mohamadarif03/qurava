@@ -131,11 +131,12 @@ export async function classifyLandmarks(
   const features = [...normalized.flat(), ...computeAngles(normalized)];
   const tensor = new ort.Tensor("float32", new Float32Array(features), [1, 78]);
   const result = await session.run({ float_input: tensor });
-  const outputs = Object.values(result);
-  if (outputs.length < 2) throw new Error("Unexpected hand-sign model output");
+  const labelTensor = result.label ?? Object.values(result)[0];
+  const probTensor = result.probabilities ?? Object.values(result)[1];
+  if (!labelTensor || !probTensor) throw new Error("Unexpected hand-sign model output");
 
-  const labelIndex = Number(outputs[0].data[0]);
-  const probabilities = Array.from(outputs[1].data as Float32Array, Number);
+  const labelIndex = Number(labelTensor.data[0]);
+  const probabilities = Array.from(probTensor.data as Float32Array, Number);
   const rawLabel = labelMap[labelIndex];
   if (!rawLabel || probabilities.length === 0) {
     throw new Error("Invalid hand-sign model output");

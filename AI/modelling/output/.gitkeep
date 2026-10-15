@@ -1,0 +1,13 @@
+# Folder ini menyimpan semua artefak hasil training.
+# Dibuat otomatis oleh script training dan export.
+# File yang akan ada di sini:
+#   - handsign_svm.onnx         (model ONNX siap pakai di web)
+#   - label_map.json            (pemetaan index -> nama huruf)
+#   - pipeline_svm.pkl          (model sklearn untuk debugging)
+#   - label_encoder.pkl         (LabelEncoder)
+#   - training_results.json     (metrics dan best params)
+#   - confusion_matrix.png      (visualisasi confusion matrix)
+#   - class_distribution.png   (distribusi kelas)
+#   - sample_images.png         (contoh gambar per kelas)
+#   - per_class_f1.png          (F1-score per kelas)
+#   - angle_correlation.png     (korelasi fitur sudut)

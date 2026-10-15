@@ -1,0 +1,211 @@
+{
+  "model": "SVC",
+  "best_params": {
+    "C": 10,
+    "class_weight": null,
+    "gamma": "scale",
+    "kernel": "linear"
+  },
+  "cv_folds": 5,
+  "cv_scoring": "f1_macro",
+  "best_cv_score": 0.917225,
+  "test_accuracy": 0.955645,
+  "test_f1_macro": 0.952651,
+  "n_classes": 27,
+  "class_names": [
+    "ain",
+    "aleff",
+    "bb",
+    "dal",
+    "dha",
+    "dhad",
+    "fa",
+    "gaaf",
+    "ghain",
+    "ha",
+    "haa",
+    "jeem",
+    "kaaf",
+    "khaa",
+    "laam",
+    "meem",
+    "ra",
+    "saad",
+    "seen",
+    "sheen",
+    "ta",
+    "taa",
+    "thaa",
+    "thal",
+    "waw",
+    "ya",
+    "zay"
+  ],
+  "n_train_samples": 1727,
+  "n_test_samples": 248,
+  "gridsearch_elapsed_seconds": 62.1,
+  "per_class_metrics": {
+    "ain": {
+      "precision": 0.875,
+      "recall": 0.875,
+      "f1-score": 0.875,
+      "support": 8
+    },
+    "aleff": {
+      "precision": 0.8667,
+      "recall": 0.8667,
+      "f1-score": 0.8667,
+      "support": 15
+    },
+    "bb": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 9
+    },
+    "dal": {
+      "precision": 0.9,
+      "recall": 1.0,
+      "f1-score": 0.9474,
+      "support": 9
+    },
+    "dha": {
+      "precision": 0.8333,
+      "recall": 1.0,
+      "f1-score": 0.9091,
+      "support": 10
+    },
+    "dhad": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 10
+    },
+    "fa": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 8
+    },
+    "gaaf": {
+      "precision": 1.0,
+      "recall": 0.8333,
+      "f1-score": 0.9091,
+      "support": 6
+    },
+    "ghain": {
+      "precision": 0.8889,
+      "recall": 0.8889,
+      "f1-score": 0.8889,
+      "support": 9
+    },
+    "ha": {
+      "precision": 0.875,
+      "recall": 1.0,
+      "f1-score": 0.9333,
+      "support": 7
+    },
+    "haa": {
+      "precision": 1.0,
+      "recall": 0.6667,
+      "f1-score": 0.8,
+      "support": 3
+    },
+    "jeem": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 5
+    },
+    "kaaf": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 11
+    },
+    "khaa": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 5
+    },
+    "laam": {
+      "precision": 0.9091,
+      "recall": 1.0,
+      "f1-score": 0.9524,
+      "support": 10
+    },
+    "meem": {
+      "precision": 1.0,
+      "recall": 0.9,
+      "f1-score": 0.9474,
+      "support": 10
+    },
+    "ra": {
+      "precision": 1.0,
+      "recall": 0.9091,
+      "f1-score": 0.9524,
+      "support": 11
+    },
+    "saad": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 12
+    },
+    "seen": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 11
+    },
+    "sheen": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 11
+    },
+    "ta": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 10
+    },
+    "taa": {
+      "precision": 0.8333,
+      "recall": 0.9091,
+      "f1-score": 0.8696,
+      "support": 11
+    },
+    "thaa": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 10
+    },
+    "thal": {
+      "precision": 1.0,
+      "recall": 0.9,
+      "f1-score": 0.9474,
+      "support": 10
+    },
+    "waw": {
+      "precision": 1.0,
+      "recall": 0.8571,
+      "f1-score": 0.9231,
+      "support": 7
+    },
+    "ya": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 10
+    },
+    "zay": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 10
+    }
+  }
+}

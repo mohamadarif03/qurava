@@ -1,0 +1,6 @@
+# Folder ini menyimpan file CSV hasil ekstraksi fitur MediaPipe.
+# Dibuat otomatis oleh: python 1_extract_features.py
+# File yang akan ada di sini:
+#   - features_train.csv
+#   - features_valid.csv
+#   - features_test.csv
