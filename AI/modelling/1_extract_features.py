@@ -1,33 +1,4 @@
 """
-1_extract_features.py
-=====================
-Feature extraction pipeline for Arabic Sign Language (ArSL) YOLO dataset.
-
-For each image in train/valid/test splits:
-  1. Reads the corresponding YOLO label file to get the class index.
-  2. Crops the image to the bounding box (+ 10 % margin).
-  3. Runs MediaPipe Hands on the cropped region.
-  4. Normalises 21 hand landmarks and computes 78 features that are
-     **identical** to those used in handsign-service.ts.
-  5. Appends the feature row (f0..f77, label, split) to a per-split CSV.
-
-Feature vector layout (78 total)
----------------------------------
-  f0  .. f62  → normalised XYZ for landmarks 0-20   (21 × 3 = 63 values)
-  f63 .. f77  → cosine angles along 5 finger chains   (5 × 3 = 15 values)
-
-Normalization (mirrors handsign-service.ts exactly):
-  • Subtract wrist (landmark 0) from every point.
-  • Scale by Euclidean distance from origin to point 9 (middle MCP).
-
-Usage
------
-  # Run from AI/modelling/ directory:
-  python 1_extract_features.py
-
-  # Custom dataset root:
-  python 1_extract_features.py --dataset ../data/Arabic Sign Language ArSL dataset
-
 Output
 ------
   AI/modelling/data/features_train.csv
@@ -85,7 +56,6 @@ CLASS_INDEX_TO_LABEL: dict[int, str] = {
     27: "ya",
 }
 
-# 5 finger chains used for angle computation (identical to handsign-service.ts)
 FINGER_CHAINS: list[list[int]] = [
     [0, 1, 2, 3, 4],    # thumb
     [0, 5, 6, 7, 8],    # index

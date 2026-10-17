@@ -9,8 +9,11 @@
   "cv_folds": 5,
   "cv_scoring": "f1_macro",
   "best_cv_score": 0.917225,
+  "cv_score": 0.917225,
   "test_accuracy": 0.955645,
+  "accuracy": 0.955645,
   "test_f1_macro": 0.952651,
+  "f1_macro": 0.952651,
   "n_classes": 27,
   "class_names": [
     "ain",

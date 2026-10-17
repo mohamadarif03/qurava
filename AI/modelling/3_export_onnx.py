@@ -1,27 +1,4 @@
 """
-3_export_onnx.py
-================
-Konversi pipeline SVM (scikit-learn) ke format ONNX untuk digunakan di web Qurava.
-
-Pipeline:
-  1. Load pipeline_svm.pkl (Pipeline: StandardScaler + SVC)
-  2. Load label_encoder.pkl
-  3. Konversi ke ONNX menggunakan skl2onnx
-     - Input tensor: nama='float_input', dtype=float32, shape=[None, 78]
-     - Output tensor: label (int64) dan probabilities (float32)
-  4. Simpan output/handsign_svm.onnx
-  5. Generate output/label_map.json (list strings, index sesuai LabelEncoder)
-  6. Validasi ONNX dengan onnxruntime (bandingkan prediksi sklearn vs onnx)
-  7. (Opsional) Salin ke ../../public/models/
-
-Output
-------
-  output/handsign_svm.onnx
-  output/label_map.json
-
-Usage
------
-  # Jalankan dari folder AI/modelling/
   python 3_export_onnx.py
 """
 

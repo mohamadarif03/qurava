@@ -1,28 +1,3 @@
-"""
-2_train_tuning.py
-=================
-Training dan hyperparameter tuning SVM untuk klasifikasi handsign (ArSL).
-
-Pipeline:
-  1. Load fitur dari CSV (train + valid digabung untuk training, test untuk evaluasi)
-  2. Encode label string → integer dengan LabelEncoder
-  3. Normalisasi fitur dengan StandardScaler (fit HANYA pada data train)
-  4. GridSearchCV (StratifiedKFold-5) pada SVC
-  5. Evaluasi model terbaik pada test set
-  6. Simpan artefak: pipeline (.pkl), label_encoder (.pkl), confusion matrix (.png),
-     training_results.json
-
-Output (semua di folder output/):
-  - pipeline_svm.pkl       → Pipeline(scaler + best SVM)
-  - label_encoder.pkl      → LabelEncoder yang menyimpan class-to-index mapping
-  - confusion_matrix.png   → Heatmap confusion matrix pada test set
-  - training_results.json  → Ringkasan hasil training & evaluasi
-
-Usage
------
-  # Jalankan dari folder AI/modelling/
-  python 2_train_tuning.py
-"""
 
 import json
 import logging
@@ -134,7 +109,6 @@ def plot_confusion_matrix(
     axes[0].tick_params(axis="x", rotation=45)
     axes[0].tick_params(axis="y", rotation=0)
 
-    # --- Normalized (recall per kelas) ---
     sns.heatmap(
         cm_norm,
         annot=True,
@@ -160,11 +134,6 @@ def plot_confusion_matrix(
     log.info(f"Confusion matrix disimpan ke: {output_path}")
 
 
-# ---------------------------------------------------------------------------
-# Main pipeline
-# ---------------------------------------------------------------------------
-
-
 def main() -> None:
     """Fungsi utama: load data → GridSearch → evaluasi → simpan artefak."""
 
@@ -182,7 +151,6 @@ def main() -> None:
     df_valid = load_csv(DATA_DIR / "features_valid.csv", "valid")
     df_test = load_csv(DATA_DIR / "features_test.csv", "test")
 
-    # Gabungkan train + valid untuk training (lebih banyak data = lebih baik)
     df_trainval = pd.concat([df_train, df_valid], ignore_index=True)
     log.info(f"Total train+valid: {len(df_trainval):,} sampel")
     log.info(f"Total test       : {len(df_test):,} sampel")
@@ -200,7 +168,7 @@ def main() -> None:
     log.info("=" * 60)
 
     le = LabelEncoder()
-    # Fit pada seluruh label yang dikenal (train+valid+test agar mapping konsisten)
+  
     all_labels = np.concatenate([y_train_raw, y_test_raw])
     le.fit(all_labels)
 
@@ -220,7 +188,6 @@ def main() -> None:
 
     scaler = StandardScaler()
 
-    # SVC dengan probability=True agar bisa output confidence score di web
     svc = SVC(probability=True, random_state=RANDOM_STATE)
 
     pipeline = Pipeline(steps=[("scaler", scaler), ("svm", svc)])
@@ -250,9 +217,7 @@ def main() -> None:
 
     best_pipeline = grid_search.best_estimator_
 
-    # -----------------------------------------------------------------------
-    # 4. Evaluasi pada test set
-    # -----------------------------------------------------------------------
+   
     log.info("=" * 60)
     log.info("STEP 4: Evaluasi pada test set")
     log.info("=" * 60)
@@ -312,8 +277,11 @@ def main() -> None:
         "cv_folds": CV_FOLDS,
         "cv_scoring": "f1_macro",
         "best_cv_score": round(float(grid_search.best_score_), 6),
+        "cv_score": round(float(grid_search.best_score_), 6),
         "test_accuracy": round(float(acc), 6),
+        "accuracy": round(float(acc), 6),
         "test_f1_macro": round(float(f1_macro), 6),
+        "f1_macro": round(float(f1_macro), 6),
         "n_classes": n_classes,
         "class_names": class_names,
         "n_train_samples": len(X_train),
@@ -355,7 +323,6 @@ def main() -> None:
     log.info(f"  ✓ {OUTPUT_DIR / 'confusion_matrix.png'}")
     log.info(f"  ✓ {results_path}")
     log.info("-" * 60)
-    log.info("Langkah berikutnya: jalankan  python 3_export_onnx.py")
 
 
 if __name__ == "__main__":
